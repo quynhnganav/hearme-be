@@ -1,0 +1,46 @@
+type Query {
+    me: GUser
+    users: [GUser]
+}
+
+type Mutation {
+    createUser(input: GUserInput!): GUser
+    updateUser(input: GUserInput!, id: ID!): GUser
+    removeUsers(ids: [ID!]): Boolean
+}
+
+type GUser {
+    _id: String
+    username: String
+    firstName: String
+    lastName: String
+    fullName: String
+    email: String
+    role: GRoleOfUser
+    permissions: [String]
+    isLocked: Boolean
+    isActive: Boolean
+    createdAt: Float
+    createdBy: GUser
+    updatedAt: Float
+    updatedBy: GUser
+}
+
+input GUserInput {
+    username: String
+    password: String
+    firstName: String
+    lastName: String
+    email: String
+    # role: GRoleOfUser
+    permissions: [String]
+    isLocked: Boolean
+    isActive: Boolean
+}
+
+type GRoleOfUser {
+    _id: ID
+    code: String
+    description: String
+    type: String,
+}

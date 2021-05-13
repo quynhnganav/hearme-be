@@ -1,0 +1,8 @@
+
+type Query {
+    sessions: [Session]
+}
+
+type Session {
+    _id: String
+}

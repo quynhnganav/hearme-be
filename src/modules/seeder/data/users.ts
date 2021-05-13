@@ -1,0 +1,135 @@
+import { User } from "../../user/schema/user.schema";
+import { hashSync } from "bcrypt";
+import { AppRole } from "../../../constant";
+
+export const users: {
+    username: string,
+    password: string,
+    firstName: string
+    lastName: string
+    email?: string
+    roles: AppRole[],
+    rejectPermissions: string[],
+}[] = [
+    {
+        username: "appadmin",
+        password: hashSync("12345678", 11),
+        firstName: "Admin",
+        lastName: "Admin",
+        email: "admin@gmail.com",
+        roles: ["APP_SUPERADMIN"],
+        rejectPermissions: [],
+    },
+    {
+        username: "user1",
+        password: hashSync("12345678", 11),
+        firstName: "User",
+        lastName: "1",
+        roles: ["APP_MEMBER"],
+        rejectPermissions: [],
+    },
+    // {
+    //     username: "user2",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "2",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user3",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "3",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user3",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "3",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user3",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "3",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user3",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "3",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user4",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "4",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user5",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "5",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user6",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "6",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user7",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "7",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user7",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "7",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user8",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "8",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user9",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "9",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // },
+    // {
+    //     username: "user10",
+    //     password: hashSync("12345678", 11),
+    //     firstName: "User",
+    //     lastName: "10",
+    //     roles: ["APP_MEMBER"],
+    //     rejectPermissions: [],
+    // }
+]
