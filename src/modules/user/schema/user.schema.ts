@@ -107,6 +107,17 @@ export class User{
     })
     updatedAt?: number
 
+    @Prop({
+        ref: DATABASE_COLLECTIONS.USER,
+        type: SchemaTypes.ObjectId
+    })
+    deletedBy?: User
+
+    @Prop({
+        type: SchemaTypes.Number
+    })
+    deletedAt?: number
+
     constructor(props: Partial<User>) {
         // super()
         Object.assign(this, props)
