@@ -4,13 +4,16 @@ import { hashSync } from 'bcrypt';
 import { FilterQuery, Model } from "mongoose";
 import { DATABASE_COLLECTIONS, HISTORY_ACTION } from '../../constant';
 import { AuthService } from '../auth/auth.service';
+import { BaseService } from '../common/interface';
 import { HistoryService } from '../history/history.service';
 import { CreateUserInputDTO } from './dto/create-user.dto';
+import { UpdateUserInputDTO } from './dto/update-user.dto';
 import { GQLUsernameExists } from './errors';
 import { User, UserDocument } from './schema/user.schema';
+import * as moment from 'moment'
 
 @Injectable()
-export class UserService {
+export class UserService implements BaseService<User, UserDocument, CreateUserInputDTO, UpdateUserInputDTO>{
 
     constructor(
         @InjectModel(DATABASE_COLLECTIONS.USER) private readonly userModel: Model<UserDocument>,
@@ -21,7 +24,7 @@ export class UserService {
         filter: FilterQuery<UserDocument>
         sort?: any
     }): Promise<User[]> {
-        const { filter, sort } = args || { filter: { }, sort: {} }
+        const { filter, sort } = args || { filter: {}, sort: {} }
         const users = await this.userModel.find({
             isDeleted: false,
             ...filter
@@ -46,7 +49,8 @@ export class UserService {
             const { input, context } = args
             const foundUser = await this.findOne({
                 filter: {
-                    username: input.username
+                    username: input.username,
+                    isDeleted: false
                 }
             });
             if (foundUser) throw new GQLUsernameExists()
@@ -60,7 +64,7 @@ export class UserService {
             await newUser.save()
             return newUser
         } catch (error) {
-            throw(error)
+            throw (error)
         }
     }
 
@@ -78,17 +82,26 @@ export class UserService {
         return newUser;
     }
 
-    async updateOne(args?: {
-        filter?: FilterQuery<UserDocument>,
-        update: Partial<User>
+    async updateOne(args: {
+        update: UpdateUserInputDTO
+        context?: any
+        id: string
     }): Promise<User> {
-        const { filter, update } = args || { filter: {}, update: {} }
+        const { id, update, context  } = args
+        const password = update?.password ? { password: hashSync(update.password, 11) } : {};
+        const input: any = {
+            ...update,
+            ...password,
+            updatedBy: new User({ _id: context?.currentUser?._id }),
+            updatedAt: moment.now()
+        }
         const user = await this.userModel.findOneAndUpdate(
-            filter,
             {
-                $set: {
-                    ...update
-                }
+                _id: id,
+                isDeleted: false, 
+            },
+            {
+                $set: input
             },
             {
                 new: true
@@ -97,19 +110,23 @@ export class UserService {
         return user
     }
 
-    async updateMany(args?: {
+    async updateMany(args: {
         filter?: FilterQuery<UserDocument>,
-        update: Partial<User>
+        update: UpdateUserInputDTO
+        context?: any
     }): Promise<User[]> {
-        const { filter, update } = args || { filter: {}, update: {} }
+        const { filter, update, context } = args
+        const input: any = {
+            ...update,
+            updatedBy: new User({ _id: context?.currentUser?._id }),
+            updatedAt: moment.now()
+        }
         const [users] = await Promise.all([
             this.findAll({ filter }),
             this.userModel.updateMany(
                 filter,
                 {
-                    $set: {
-                        ...update
-                    }
+                    $set: input
                 }
             )
 
@@ -119,15 +136,19 @@ export class UserService {
 
     async deleteMany(args: {
         filter?: FilterQuery<UserDocument>,
+        ids?: string[]
+        context?: any
     }): Promise<User[]> {
-        const { filter } = args
+        const { filter, ids, context } = args
         const [users] = await Promise.all([
-            this.findAll({ filter: { ...filter, isDelete: false } }),
+            this.findAll({ filter: { _id: { $in: ids || [] }, ...filter, isDeleted: false } }),
             this.userModel.updateMany(
-                { ...filter, isDelete: false },
+                { _id: { $in: ids || [] }, ...filter, isDeleted: false },
                 {
                     $set: {
-                        isDelete: true
+                        isDeleted: true,
+                        deletedBy: new User({ _id: context?.currentUser?._id }),
+                        deletedAt: moment.now()
                     }
                 }
             )

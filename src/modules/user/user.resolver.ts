@@ -8,6 +8,7 @@ import { differenceBy } from "lodash";
 import { IsAuthentication, NotAuthentication, RequirePermissions } from '../auth/decorator';
 import { APP_PERMISSIONS, PERMS } from '../../constant';
 import { CreateUserInputDTO } from './dto/create-user.dto';
+import { UpdateUserInputDTO } from './dto/update-user.dto';
 
 @Resolver('GUser')
 export class UserResolver {
@@ -44,6 +45,34 @@ export class UserResolver {
             context: ctx
         })
         return newUser;
+    }
+
+    @Mutation()
+    @RequirePermissions(APP_PERMISSIONS.USER_EDIT)
+    async updateUser(
+        @Context() context,
+        @Args('input') update: UpdateUserInputDTO,
+        @Args('id') id: string
+    ): Promise<User> {
+        const newUser = await this.userService.updateOne({
+            id, 
+            update,
+            context,
+        })
+        return newUser
+    }
+
+    @Mutation()
+    @RequirePermissions(APP_PERMISSIONS.USER_DELETE)
+    async removeUsers(
+        @Context() context,
+        @Args('ids') ids: string[]
+    ): Promise<User[]> {
+        const users = await this.userService.deleteMany({
+            ids,
+            context
+        })
+        return users
     }
 
     @ResolveField('role')

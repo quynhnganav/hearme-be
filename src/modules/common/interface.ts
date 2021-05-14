@@ -19,19 +19,22 @@ export interface BaseService<SCHEMA, DOCUMENT, DTO_CREATE, DTO_UPDATE> {
     }): Promise<SCHEMA>
 
     updateOne(args: {
-        filter?: FilterQuery<DOCUMENT>
-        input: DTO_UPDATE
+        filter?: FilterQuery<SCHEMA>
+        id: string
+        update: DTO_UPDATE
         context?: any
     }): Promise<SCHEMA>
 
-    updateMany(args?: {
+    updateMany(args: {
         filter?: FilterQuery<DOCUMENT>,
         update: DTO_UPDATE
+        context?: any
     }): Promise<SCHEMA[]>
 
     deleteMany(args: {
         filter?: FilterQuery<DOCUMENT>
-        ids: string[]
+        ids?: string[]
+        context?: any
     }): Promise<SCHEMA[]>
 
 }

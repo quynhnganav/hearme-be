@@ -6,7 +6,7 @@ type Query {
 type Mutation {
     createUser(input: GUserInput!): GUser
     updateUser(input: GUserInput!, id: ID!): GUser
-    removeUsers(ids: [ID!]): Boolean
+    removeUsers(ids: [ID!]): [GUser]
 }
 
 type GUser {

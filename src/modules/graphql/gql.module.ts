@@ -51,7 +51,6 @@ export default GraphQLModule.forRootAsync({
           console.debug(`🔗  Connected to websocket`, 'GraphQL')
 
         const token = connectionParams[HEADER_TOKEN_KEY]
-        console.log(token);
         
         if (token) {
           const { user } = await authService.verifyToken(token)
@@ -77,8 +76,6 @@ export default GraphQLModule.forRootAsync({
       }
     },
     context: async ({ req: request, connection }: { req: Request, connection: any }): Promise<any> => {
-      
-      console.log(connection);
       
       if (connection) {
         const { currentAccount, permissions } = connection.context
