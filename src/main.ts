@@ -1,18 +1,19 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { Authencation } from './modules/auth/guard/authentication.guard';
-import { PermissionGuard } from './modules/auth/guard/permission.guard';
-import { ConfigurationService } from './modules/config/config.service';
-import { GQLAgumentGuard } from './modules/graphql/gql.arg.guard';
-import { GQLArgValidationFailedError } from './modules/graphql/gql.error';
-import { ApolloErrorFilter, DocumentValidationErrorFilter } from './modules/graphql/gql.exception.filter';
+import { Logger, ValidationPipe } from '@nestjs/common'
+import { NestFactory, Reflector } from '@nestjs/core'
+import { AppModule } from './app.module'
+import { Authencation } from './modules/auth/guard/authentication.guard'
+import { PermissionGuard } from './modules/auth/guard/permission.guard'
+import { ConfigurationService } from './modules/config/config.service'
+import { GQLAgumentGuard } from './modules/graphql/gql.arg.guard'
+import { GQLArgValidationFailedError } from './modules/graphql/gql.error'
+import { ApolloErrorFilter, DocumentValidationErrorFilter } from './modules/graphql/gql.exception.filter'
+import { LoggingInterceptor } from './interceptor/logging.interceptor'
 
-declare const module: any;
+declare const module: any
 
 const logger = new Logger('Main')
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule)
 
   const appPort = app.get(ConfigurationService).getAppListeningPort()
 
@@ -28,17 +29,20 @@ async function bootstrap() {
   }))
 
   app.useGlobalFilters(new DocumentValidationErrorFilter())
+  app.useGlobalInterceptors(new LoggingInterceptor())
   
   await app.listen(appPort, () => {
-    const mongoUri = app.get(ConfigurationService).getMongoURI();
+    const mongoUri = app.get(ConfigurationService).getMongoURI()
+    const gqlEndpoint = app.get(ConfigurationService).getGQLEndpointPath()
     logger.debug('Database uri: ' + mongoUri)
     logger.debug('App is listening on port ' + appPort)
+    logger.debug('GraphQL server is serving at ' + gqlEndpoint)
   })
 
   if (module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
+    module.hot.accept()
+    module.hot.dispose(() => app.close())
   }
 
 }
-bootstrap();
+bootstrap()

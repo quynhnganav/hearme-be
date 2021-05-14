@@ -1,0 +1,14 @@
+# auth
+directive @isAuthenticated on FIELD | FIELD_DEFINITION
+# function
+directive @deprecated(
+	reason: String = "No longer supported"
+) on FIELD_DEFINITION | ENUM_VALUE
+
+scalar Scalar
+
+schema {
+	query: Query
+	mutation: Mutation
+	subscription: Subscription
+}

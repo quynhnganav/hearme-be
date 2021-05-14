@@ -1,0 +1,25 @@
+type Subscription {
+  subApp(
+    modules: [String], # ['app', 'supplyDrug', 'examination', 'medicalTest']
+    idNode: ID
+  ): SubResponse @isAuthenticated
+}
+
+type SubResponse {
+  # 'app', 'supplyDrug', 'examination', 'medicalTest'
+  module: String
+
+  # module = 'app' => type = ['']
+  # module = 'supplyDrug' => type = ['createReceiptReceive']
+  # module = 'examination' => type = ['createReceiptReceive']
+  # module = 'medicalTest' => type = ['createReceiptReceive']
+  type: String
+
+  idNode: String
+
+  # module = 'app' & type = '' => {}
+  # module = 'supplyDrug' & type = 'createReceiptReceive' => string
+  # module = 'examination' & type = 'createReceiptReceive' => string
+  # module = 'medicalTest' & type = 'createReceiptReceive' => string
+  data: Scalar
+}
