@@ -1,10 +1,4 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-} from '@nestjs/common'
-// import { BaseExceptionFilter } from '@nestjs/core'
-// import { GqlExceptionFilter } from '@nestjs/graphql'
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common'
 import { ApolloError } from 'apollo-server-express'
 import { Error } from 'mongoose'
 
@@ -15,10 +9,16 @@ export class ApolloErrorFilter implements ExceptionFilter {
   }
 }
 
-
+/**
+ * TODO check hoạt động của exception filter
+ */
 @Catch(Error.ValidationError)
 export class DocumentValidationErrorFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
-    throw new ApolloError('Hello world')
+    console.log(
+      '🚀 ~ file: gql.exception.filter.ts ~ line 27 ~ DocumentValidationErrorFilter ~ exception',
+      exception
+    )
+    throw new ApolloError(exception)
   }
 }

@@ -44,13 +44,15 @@ export default GraphQLModule.forRootAsync({
       }
     },
     subscriptions: {
-      path: configService.getGQLEndpointPath(),
-      keepAlive: 1000,
+      // path: configService.getGQLEndpointPath(),
+      keepAlive: 3000,
       onConnect: async (connectionParams) => {
         configService.getNodeEnv() !== 'production' &&
           console.debug(`🔗  Connected to websocket`, 'GraphQL')
 
         const token = connectionParams[HEADER_TOKEN_KEY]
+        console.log(token);
+        
         if (token) {
           const { user } = await authService.verifyToken(token)
           const permissions = await (await authService.findPermissionOfUser(user)).map(p => p.code) || []
@@ -60,7 +62,7 @@ export default GraphQLModule.forRootAsync({
 
         }
 
-        if (token) {
+        if (!token) {
           const currentAccount = {}
           return { currentAccount }
         }
@@ -74,7 +76,10 @@ export default GraphQLModule.forRootAsync({
           console.error(`❌  Disconnected to websocket`, '', 'GraphQL', false)
       }
     },
-    context: async ({ req: request }: { req: Request }, connection): Promise<any> => {
+    context: async ({ req: request, connection }: { req: Request, connection: any }): Promise<any> => {
+      
+      console.log(connection);
+      
       if (connection) {
         const { currentAccount, permissions } = connection.context
         return {

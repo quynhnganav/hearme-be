@@ -9,7 +9,7 @@ export type PostDocument = Post & Document
 @Schema({
     collection: DATABASE_COLLECTIONS.POST
 })
-export class Post extends BaseSchema{
+export class Post {
 
     @Prop({
         type: SchemaTypes.ObjectId,
@@ -34,11 +34,52 @@ export class Post extends BaseSchema{
     }])
     likes: User[]
 
+    @Prop({
+        required: true,
+        default: false
+    })
+    isDeleted: boolean
+
+    @Prop({
+        required: true,
+        default: false
+    })
+    isLocked: boolean
+
+    @Prop({
+        required: true,
+        default: false
+    })
+    isActive: boolean
+
+    @Prop({
+        ref: DATABASE_COLLECTIONS.USER,
+        type: SchemaTypes.ObjectId,
+        default: null
+    })
+    createdBy: User
+
+    @Prop({
+        type: SchemaTypes.Number
+    })
+    createdAt: number
+
+    @Prop({
+        ref: DATABASE_COLLECTIONS.USER,
+        type: SchemaTypes.ObjectId
+    })
+    updatedBy?: User
+
+    @Prop({
+        type: SchemaTypes.Number
+    })
+    updatedAt?: number
+
     constructor(props: Partial<Post>) {
-        super()
+        // super()
         Object.assign(this, props)
     }
 
 }
 
-export const UserSchema = SchemaFactory.createForClass(Post)
+export const PostSchema = SchemaFactory.createForClass(Post)
