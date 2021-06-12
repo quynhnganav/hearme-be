@@ -11,8 +11,8 @@ import {
   export class LoggingInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
       const now: number = Date.now()
-      const actionType = String(context['args'][3].parentType)
-      const functionName = String(context.getArgs()[3].fieldName)
+      const actionType = String(context['args'][3]?.parentType || '')
+      const functionName = String(context.getArgs()[3]?.fieldName || '')
       const arrayAction: string[] = ['Query', 'Mutation']
   
       return next.handle().pipe(

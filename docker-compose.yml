@@ -1,0 +1,15 @@
+version: "3.4"
+
+services:
+    app:
+        image: nest-app:v1
+        volumes:
+        - ./:/var/www/html # mount từ môi trường gốc vào trong để nếu các bạn thay đổi code thì bên trong sẽ tự động cập nhật
+        environment: # phần này ta định nghĩa ở file .env nhé
+        - DB_HOST=${DB_HOST}
+        - DB_NAME=${DB_NAME}
+        - PORT=${PORT}
+        ports:
+        - "80:${PORT}" # phần này ta định nghĩa ở file .env nhé
+        restart: unless-stopped
+  

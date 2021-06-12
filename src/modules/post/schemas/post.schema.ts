@@ -46,11 +46,11 @@ export class Post {
     })
     isLocked: boolean
 
-    @Prop({
-        required: true,
-        default: false
-    })
-    isActive: boolean
+    // @Prop({
+    //     required: true,
+    //     default: false
+    // })
+    // isActive: boolean
 
     @Prop({
         ref: DATABASE_COLLECTIONS.USER,
@@ -74,6 +74,17 @@ export class Post {
         type: SchemaTypes.Number
     })
     updatedAt?: number
+
+    @Prop({
+        ref: DATABASE_COLLECTIONS.USER,
+        type: SchemaTypes.ObjectId
+    })
+    deletedBy?: User
+
+    @Prop({
+        type: SchemaTypes.Number
+    })
+    deletedAt?: number
 
     constructor(props: Partial<Post>) {
         // super()

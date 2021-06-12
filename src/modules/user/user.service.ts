@@ -4,7 +4,6 @@ import { hashSync } from 'bcrypt';
 import { FilterQuery, Model } from "mongoose";
 import { DATABASE_COLLECTIONS, HISTORY_ACTION } from '../../constant';
 import { AuthService } from '../auth/auth.service';
-import { BaseService } from '../common/interface';
 import { HistoryService } from '../history/history.service';
 import { CreateUserInputDTO } from './dto/create-user.dto';
 import { UpdateUserInputDTO } from './dto/update-user.dto';
@@ -13,7 +12,7 @@ import { User, UserDocument } from './schema/user.schema';
 import * as moment from 'moment'
 
 @Injectable()
-export class UserService implements BaseService<User, UserDocument, CreateUserInputDTO, UpdateUserInputDTO>{
+export class UserService {
 
     constructor(
         @InjectModel(DATABASE_COLLECTIONS.USER) private readonly userModel: Model<UserDocument>,

@@ -15,8 +15,17 @@ export class Authencation implements CanActivate {
             EnumDecorator.NOT_AUTHEN,
             context.getHandler()
         );
-        if (notAuthen) return true;
+
+        const isDoctor = this.reflector.get<boolean | null>(
+            EnumDecorator.IS_DOCTOR,
+            context.getHandler()
+        )
         const ctx = context.getArgByIndex(2);
+        if (isDoctor) {
+            if (!ctx?.currentUser || !ctx?.currentUser?.doctor)
+                throw new UnauthorizedError('Forbidden Permission');
+        }
+        if (notAuthen) return true;
         if (!ctx?.currentUser)
             throw new UnauthorizedError('Forbidden Permission');
         return true

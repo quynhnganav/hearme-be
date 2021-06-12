@@ -35,6 +35,11 @@ export class User{
     })
     lastName: string
 
+    @Prop({
+        type: SchemaTypes.Number
+    })
+    dob?: number
+
     @Prop()
     picture?: string
 
@@ -83,6 +88,12 @@ export class User{
         default: false
     })
     isActive: boolean
+
+    @Prop({
+        required: true,
+        default: false
+    })
+    isNoDelete: boolean
 
     @Prop({
         ref: DATABASE_COLLECTIONS.USER,

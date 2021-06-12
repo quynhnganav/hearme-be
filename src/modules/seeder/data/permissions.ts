@@ -9,7 +9,13 @@ export const permissionsObj: { [key in AppPermission]: string } = {
     APP_PERMISSION_VIEW: "Xem danh sách quyền",
     APP_ROLE_CREATE: "Tạo mới chức vụ",
     APP_ROLE_EDIT: "Chỉnh sửa chức vụ",
-    APP_ROLE_VIEW: "Xem danh sách chức vụ"
+    APP_ROLE_VIEW: "Xem danh sách chức vụ",
+    APP_DOCTOR_CREATE: "Tạo mới bác sĩ",
+    APP_DOCTOR_DELETE: "Xóa bác sĩ",
+    APP_DOCTOR_EDIT: "Chỉnh sửa bác sĩ",
+    APP_DOCTOR_USER: "Truy cập vào bác sĩ",
+    APP_POST_DELETE: "Xóa bài viết của người dùng",
+    APP_POST_LOCK: "Khóa bài viết của người dùng",
 }
 
 export const permissions: {
@@ -20,4 +26,4 @@ export const permissions: {
     description: permissionsObj[p],
 }))
 
-console.log(permissions)
+// console.log(permissions)

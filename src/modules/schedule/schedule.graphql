@@ -1,0 +1,14 @@
+type Query {
+    schedules: [GSchedule]
+}
+
+type Mutation {
+    bookSchedule(idDoctor: ID!): [GSchedule]
+    confirmSchedule(id: ID!): [GSchedule]
+    cancelSchedule(id: ID!): [GSchedule]
+}
+
+type GSchedule {
+    _id: String
+   
+}

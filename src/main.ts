@@ -8,12 +8,24 @@ import { GQLAgumentGuard } from './modules/graphql/gql.arg.guard'
 import { GQLArgValidationFailedError } from './modules/graphql/gql.error'
 import { ApolloErrorFilter, DocumentValidationErrorFilter } from './modules/graphql/gql.exception.filter'
 import { LoggingInterceptor } from './interceptor/logging.interceptor'
+import * as bodyParser from 'body-parser'
+import { NestExpressApplication } from '@nestjs/platform-express'
+import { IoAdapter } from '@nestjs/platform-socket.io'
 
 declare const module: any
 
 const logger = new Logger('Main')
+
+
+export class WebSocketApdapter extends IoAdapter {
+  createIOServer(port: number): any {
+    const server = super.createIOServer(port);
+    return server;
+  }
+}
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
   const appPort = app.get(ConfigurationService).getAppListeningPort()
 
@@ -30,6 +42,10 @@ async function bootstrap() {
 
   app.useGlobalFilters(new DocumentValidationErrorFilter())
   app.useGlobalInterceptors(new LoggingInterceptor())
+  app.use(bodyParser.json({ limit: '50mb' }))
+  app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 1000000}))
+  app.enableCors()
+  app.useWebSocketAdapter(new WebSocketApdapter(app))
   
   await app.listen(appPort, () => {
     const mongoUri = app.get(ConfigurationService).getMongoURI()

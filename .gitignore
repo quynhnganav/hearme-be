@@ -35,5 +35,10 @@ lerna-debug.log*
 
 .env.development
 .env.production
+.env
 
 src/schema.ts
+uploads
+
+#docker
+.docker

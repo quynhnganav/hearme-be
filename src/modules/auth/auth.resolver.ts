@@ -1,5 +1,6 @@
 import { Parent, Query, ResolveField, Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { AuthenticationInfo } from 'src/schema';
+import { MicroserviceService } from '../microservices/microservice.service';
 import { UserService } from '../user/user.service';
 import { GQLUnauthenticatedError } from './auth.error';
 import { AuthService } from './auth.service';
@@ -13,7 +14,8 @@ export class AuthResolver {
 
     constructor(
         private readonly authService: AuthService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly micrService: MicroserviceService
     ) { }
 
     @Query()
@@ -26,6 +28,7 @@ export class AuthResolver {
     @Mutation()
     @NotAuthentication()
     async login(@Args("info") input: LoginInputDTO): Promise<AuthenticationInfo> {
+        this.micrService.sendNoti()
         const { username, password } = input;
         const user = await this.userService.findOne({
             filter: {

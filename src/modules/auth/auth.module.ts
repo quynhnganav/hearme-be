@@ -10,6 +10,7 @@ import { SessionModule } from '../session/session.module';
 import { JwtModule } from "@nestjs/jwt";
 import ConfigModule from '../config/config.module';
 import { ConfigurationService } from '../config/config.service';
+import { MicroserviceModule } from '../microservices/microservice.module';
 
 @Module({
     imports: [
@@ -28,7 +29,8 @@ import { ConfigurationService } from '../config/config.service';
                 }
             },
             inject: [ConfigurationService]
-        })
+        }),
+        MicroserviceModule
     ],
     providers: [AuthService, AuthResolver, RoleResolver],
     exports: [AuthService]

@@ -1,0 +1,30 @@
+type Query {
+    doctors: [GDoctor]
+}
+
+type Mutation {
+    registerDoctor(input: RegisterDoctorInput!): [GDoctor]
+    confirmDoctor(id: ID!): [GDoctor]
+    lookDoctor(id: ID!): [GDoctor]
+}
+
+type GDoctor {
+    _id: String
+    code: String
+    slogan: String
+    note: String
+    experience: Int
+    user: GUser
+    isDeleted: Boolean
+    isActive: Boolean
+    createdAt: Float
+    createdBy: GUser
+    updatedAt: Float
+    updatedBy: GUser
+}
+
+input RegisterDoctorInput {
+    slogan: String
+    note: String
+    experience: Int!
+}

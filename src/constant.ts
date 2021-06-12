@@ -4,7 +4,8 @@ export const HEADER_TOKEN_KEY = "access-token"
 export enum EnumDecorator {
     PERMISSIONS,
     ISAUTHEN,
-    NOT_AUTHEN
+    NOT_AUTHEN,
+    IS_DOCTOR
 }
 
 export enum DATABASE_COLLECTIONS {
@@ -14,7 +15,10 @@ export enum DATABASE_COLLECTIONS {
     HISTORY = 'histories',
     SESSION = 'sessions',
     POST = 'posts',
-    COMMENT = 'comments'
+    COMMENT = 'comments',
+    MESSAGE = 'messages',
+    DOCTOR = 'doctors',
+    SCHEDULE = 'schedules'
 }
 
 export enum HISTORY_ACTION {
@@ -34,6 +38,7 @@ export const ROLES = {
         ADMIN: 'APP_ADMIN',
         SUPERADMIN: 'APP_SUPERADMIN',
         MEMBER: 'APP_MEMBER',
+        DOCTOR: 'APP_DOCTOR'
     } as const
 }
 
@@ -57,6 +62,12 @@ export const PERMS = {
         USER_DELETE: 'APP_USER_DELETE',
         USER_EDIT: 'APP_USER_EDIT',
         USER_CREATE: 'APP_USER_CREATE',
+        POST_LOCK : 'APP_POST_LOCK',
+        POST_DELETE: 'APP_POST_DELETE',
+        DOCTOR_CREATE: 'APP_DOCTOR_CREATE',
+        DOCTOR_DELETE: 'APP_DOCTOR_DELETE',
+        DOCTOR_EDIT: 'APP_DOCTOR_EDIT',
+        DOCTOR_USER: 'APP_DOCTOR_USER',
     } as const,
 
 }

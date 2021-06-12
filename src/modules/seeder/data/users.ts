@@ -1,6 +1,6 @@
-import { User } from "../../user/schema/user.schema";
 import { hashSync } from "bcrypt";
 import { AppRole } from "../../../constant";
+import * as moment from 'moment'
 
 export const users: {
     username: string,
@@ -9,7 +9,9 @@ export const users: {
     lastName: string
     email?: string
     roles: AppRole[],
-    rejectPermissions: string[],
+    rejectPermissions: string[]
+    isNoDelete?: boolean,
+    dob?: number
 }[] = [
     {
         username: "appadmin",
@@ -19,6 +21,8 @@ export const users: {
         email: "admin@gmail.com",
         roles: ["APP_SUPERADMIN"],
         rejectPermissions: [],
+        isNoDelete: true,
+        dob: moment.now(),
     },
     {
         username: "user1",
@@ -27,109 +31,16 @@ export const users: {
         lastName: "1",
         roles: ["APP_MEMBER"],
         rejectPermissions: [],
+        dob: moment.now(),
     },
-    // {
-    //     username: "user2",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "2",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user3",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "3",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user3",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "3",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user3",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "3",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user3",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "3",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user4",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "4",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user5",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "5",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user6",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "6",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user7",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "7",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user7",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "7",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user8",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "8",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user9",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "9",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // },
-    // {
-    //     username: "user10",
-    //     password: hashSync("12345678", 11),
-    //     firstName: "User",
-    //     lastName: "10",
-    //     roles: ["APP_MEMBER"],
-    //     rejectPermissions: [],
-    // }
+    {
+        username: "doctor",
+        password: hashSync("12345678", 11),
+        firstName: "Doctor",
+        lastName: "1",
+        roles: ["APP_DOCTOR"],
+        rejectPermissions: [],
+        dob: moment.now(),
+    },
+    
 ]

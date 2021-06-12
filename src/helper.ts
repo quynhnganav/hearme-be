@@ -6,6 +6,11 @@ export class IDFactory {
   public static generateID() {
     return v1()
   }
+
+  public static generateCode() {
+    return `${Math.floor((Math.random()*1000)+1)}-${Math.floor((Math.random()*1000)+1)}-${Math.floor((Math.random()*1000)+1)}`
+  }
+
 }
 
 export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<

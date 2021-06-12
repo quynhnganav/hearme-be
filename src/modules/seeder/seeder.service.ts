@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { AuthService } from '../auth/auth.service';
-import { permissions, roles, users } from "./data";
+import { permissions, roles, users, doctors } from "./data";
+import { DoctorService } from '../doctor/doctor.service';
+import { User } from '../user/schema/user.schema';
 
 @Injectable()
 export class SeederService {
 
     constructor(
         private readonly userService: UserService,
-        private readonly authService: AuthService
+        private readonly authService: AuthService,
+        private readonly doctorService: DoctorService
     ) { }
 
     async seederPermission() {
-        console.log(permissions);
         const permissionsFound = await this.authService.findAllPermission();
-        console.log(permissionsFound);
         if (!permissionsFound || permissionsFound.length < 1) await this.authService.insertManyPermission(permissions);
         console.log("Permission Seeder");
         
@@ -49,6 +50,20 @@ export class SeederService {
 
         console.log("User Seeder");
 
+        const doctorsFound = await this.doctorService.findAll();
+        
+        if (!doctorsFound || doctorsFound.length < 1) {
+            for await(const doctor of doctors) {
+                const userOfDoctor = await this.userService.findOne({ filter: { username: doctor.username } });
+                if (!userOfDoctor) continue
+                await this.doctorService.saveDoctor({
+                    ...doctor,
+                    user: new User({ _id: userOfDoctor._id }),
+                })
+            }
+        }
+
+        console.log("Doctor Seeder");
         
     }
 

@@ -1,0 +1,32 @@
+type Query {
+    posts: [GPost]
+    postOfMe: [GPost]
+}
+
+type Mutation {
+    createdPost(input: GPostInput!): GPost
+    updatedPost(input: GPostInput!, id: ID!): GPost
+    removedPosts(ids: [ID!]): [GPost]
+}
+
+type GPost {
+    _id: String
+    text: String
+    medias: [String]
+    likes: Int
+    comments: Int
+    isDeleted: Boolean
+    isLocked: Boolean
+    isActive: Boolean
+    createdBy: GUser
+    createdAt: Float
+    updatedBy: GUser
+    updatedAt: Float
+    deletedBy: GUser
+    deletedAt: Float
+}
+
+input GPostInput {
+    text: String
+    medias: [String]
+}
