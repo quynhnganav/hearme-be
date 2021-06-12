@@ -24,7 +24,7 @@ export default GraphQLModule.forRootAsync({
       definitions: {
         path: join(process.cwd(), 'src/schema.ts')
       },
-      installSubscriptionHandlers: true,
+      installSubscriptionHandlers: false,
       path: configService.getGQLEndpointPath(),
       bodyParserConfig: { limit: '50mb' },
       // cors:
@@ -68,6 +68,7 @@ export default GraphQLModule.forRootAsync({
             const currentAccount = {}
             return { currentAccount }
           }
+          return false
 
           throw new AuthenticationError(
             'Authentication token is invalid, please try again.'
