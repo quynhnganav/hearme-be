@@ -13,6 +13,7 @@ import { UpdaloadController } from './controller/upload.controller';
 import { DoctorModule } from './modules/doctor/doctor.module';
 import { ScheduleModule } from './modules/schedule/schedule.module';
 import { MicroserviceModule } from './modules/microservices/microservice.module';
+import { PubsubModule } from './modules/pubsub/pubsub.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { MicroserviceModule } from './modules/microservices/microservice.module'
     PostModule,
     DoctorModule,
     ScheduleModule,
-    MicroserviceModule
+    MicroserviceModule,
+    PubsubModule
   ],
   controllers: [AppController, UpdaloadController],
   providers: [AppService, SubscriptionResolver],
