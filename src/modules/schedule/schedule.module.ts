@@ -1,7 +1,9 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { DATABASE_COLLECTIONS } from "../../constant";
+import { DoctorModule } from "../doctor/doctor.module";
 import { UserModule } from "../user/user.module";
+import { ScheduleResolver } from "./schedule.resolver";
 import { ScheduleService } from "./schedule.service";
 import { ScheduleSchema } from "./schema/schedule.schema";
 
@@ -10,9 +12,10 @@ import { ScheduleSchema } from "./schema/schedule.schema";
         MongooseModule.forFeature([
             { name: DATABASE_COLLECTIONS.SCHEDULE, schema: ScheduleSchema }
         ]),
-        UserModule
+        UserModule,
+        DoctorModule
     ],
-    providers: [ScheduleService],
+    providers: [ScheduleService, ScheduleResolver],
     exports: [ScheduleService]
 })
 export class ScheduleModule {}

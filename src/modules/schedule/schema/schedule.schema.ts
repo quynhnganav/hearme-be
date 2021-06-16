@@ -3,13 +3,10 @@ import { Document, Schema as MongooseSchema, SchemaTypes, Types } from 'mongoose
 import { Doctor } from 'src/modules/doctor/schema/doctor.schema'
 import { DATABASE_COLLECTIONS } from '../../../constant'
 import { User } from '../../user/schema/user.schema'
+import { EnumChannelSchedule, EnumStatusSchedule } from "../../../schema";
+import { IDFactory } from 'src/helper'
 
 export type ScheduleDocument = Schedule & Document
-
-export enum ChannelSchedule {
-    ONLINE,
-    OFFLINE
-}
 
 @Schema({
     collection: DATABASE_COLLECTIONS.SCHEDULE
@@ -23,7 +20,8 @@ export class Schedule {
     _id: string
 
     @Prop({
-        required: true
+        required: true,
+        default: IDFactory.generateCode
     })
     code: string
 
@@ -33,23 +31,42 @@ export class Schedule {
     time: number
 
     @Prop({
-        ref: DATABASE_COLLECTIONS.DOCTOR,
-        type: SchemaTypes.ObjectId,
-    })
-    doctor: Doctor
-
-    @Prop([{
         ref: DATABASE_COLLECTIONS.USER,
         type: SchemaTypes.ObjectId,
-    }])
-    clients: User[]
+    })
+    doctor: User
+
+    @Prop({
+        ref: DATABASE_COLLECTIONS.USER,
+        type: SchemaTypes.ObjectId,
+    })
+    client: User
 
     @Prop({
         required: true,
-        enum: ChannelSchedule,
-        default: ChannelSchedule.OFFLINE
+        type: EnumChannelSchedule,
+        enum: EnumChannelSchedule,
+        default: EnumChannelSchedule.OFFLINE
     })
-    channel: ChannelSchedule
+    channel: EnumChannelSchedule
+
+    @Prop({
+        required: true,
+        type: EnumStatusSchedule,
+        enum: EnumStatusSchedule,
+        default: EnumStatusSchedule.WAITING_DOCTOR_CONFIRM
+    })
+    status: EnumStatusSchedule
+
+    @Prop({
+        default: null
+    })
+    note?: string
+
+    @Prop({
+        default: null
+    })
+    cancelBy: 'DOCTOR' | 'CLIENT'
 
     @Prop({
         required: true,

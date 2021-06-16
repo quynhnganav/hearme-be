@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { DATABASE_COLLECTIONS } from "../../constant";
 import { UserModule } from "../user/user.module";
+import { DoctorResolver } from "./doctor.resolver";
 import { DoctorService } from "./doctor.service";
 import { DoctorSchema } from "./schema/doctor.schema";
 
@@ -12,7 +13,7 @@ import { DoctorSchema } from "./schema/doctor.schema";
         ]),
         UserModule
     ],
-    providers: [DoctorService],
+    providers: [DoctorService, DoctorResolver],
     exports: [DoctorService]
 })
 export class DoctorModule {}

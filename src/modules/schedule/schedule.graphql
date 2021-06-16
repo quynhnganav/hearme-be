@@ -1,14 +1,56 @@
 type Query {
     schedules: [GSchedule]
+    myBookSchedules: [GSchedule]
+    myBeBookSchedules: [GSchedule]
+    rSScheduleOfDoctor(time: Float): [Float]
 }
 
 type Mutation {
-    bookSchedule(idDoctor: ID!): [GSchedule]
-    confirmSchedule(id: ID!): [GSchedule]
-    cancelSchedule(id: ID!): [GSchedule]
+    bookSchedule(input: BookScheduleInput!): GSchedule
+    changeSchedule(input: BookScheduleInput!): GSchedule
+    confirmSchedule(id: ID!): GSchedule
+    cancelSchedule(id: ID!): GSchedule
 }
 
 type GSchedule {
-    _id: String
-   
+    _id: String 
+    code: String 
+    time: Float
+    doctor: GDoctor
+    client: GUser
+    note: String
+    channel: EnumChannelSchedule
+    status: EnumStatusSchedule
+    isMe: ClientDoctor
+    isDeleted: Boolean
+    isActive: Boolean
+    createdBy: GUser
+    createdAt: Float
+    updatedBy: GUser
+    updatedAt: Float
+}
+
+enum ClientDoctor {
+    CLIENT
+    DOCTOR
+    OTHER
+}
+
+input BookScheduleInput {
+    idDoctor: String!
+    time: Float!
+    channel: EnumChannelSchedule
+    note: String
+}
+
+enum EnumStatusSchedule {
+    WAITING_DOCTOR_CONFIRM
+    WAITING_DOCTOR_CONFIRM_CANCEL
+    WAITING_CUSTOMER_CONFIRM
+    ACCEPTED
+}
+
+enum EnumChannelSchedule {
+    ONLINE,
+    OFFLINE
 }

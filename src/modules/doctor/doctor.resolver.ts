@@ -21,6 +21,15 @@ export class DoctorResolver {
         return doctors
     }
 
+    @Query()
+    async doctorsRS(): Promise<Doctor[]> {
+        const doctors = await this.doctorService.findAll({
+            sort: { createdAt: -1 },
+            filter: { isDeleted: false }
+        })
+        return doctors
+    }
+
     @Mutation()
     async registerDoctor(
         @Args('input') input: RegisterDoctorInputDTO,

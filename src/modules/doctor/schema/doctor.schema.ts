@@ -1,6 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Schema as MongooseSchema, SchemaTypes, Types } from 'mongoose'
-import { IDFactory } from 'src/helper'
+import { IDFactory } from '../../../helper'
 import { DATABASE_COLLECTIONS } from '../../../constant'
 import { User } from '../../user/schema/user.schema'
 
@@ -55,6 +55,18 @@ export class Doctor {
         default: false
     })
     isActive: boolean
+
+    @Prop({
+        ref: DATABASE_COLLECTIONS.USER,
+        type: SchemaTypes.ObjectId,
+        default: null
+    })
+    createdBy: User
+
+    @Prop({
+        type: SchemaTypes.Number
+    })
+    createdAt: number
 
     @Prop({
         ref: DATABASE_COLLECTIONS.USER,
