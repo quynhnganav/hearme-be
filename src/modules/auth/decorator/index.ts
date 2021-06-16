@@ -13,3 +13,11 @@ export const UserGQL = createParamDecorator(
         return currentUser;
     }
 )
+
+
+export const DoctorGQL = createParamDecorator(
+    (data: unknown, ctx: ExecutionContext) => {
+        const { doctor } = ctx.getArgByIndex(2) || { doctor: null };
+        return doctor;
+    }
+)

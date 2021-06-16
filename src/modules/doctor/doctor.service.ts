@@ -22,16 +22,23 @@ export class DoctorService {
         const doctors = await this.doctorModel.find({
             isDeleted: false,
             ...filter
-        }).sort(sort);
+        }).sort(sort).populate('user');
+        // console.log(doctors)
         return doctors;
     }
 
+
+    async findOne(id: string): Promise<Doctor> {
+        return this.doctorModel.findOne({ _id: id, isActive: true, isDeleted: false }).exec()
+    }
+
     async findByUserId(id: string): Promise<Doctor> {
-        return this.doctorModel.findOne({
+         const doctor = await this.doctorModel.findOne({
             user: new User({ _id: id }),
             isActive: true,
             isDeleted: false
         }).exec()
+        return doctor
     }
 
     async saveDoctor(doctor: any) {

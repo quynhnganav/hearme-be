@@ -8,7 +8,7 @@ import { join } from 'path';
 import { NotAuthentication } from 'src/modules/auth/decorator';
 import * as sharp from 'sharp'
 
-@Controller('/file')
+@Controller('/api/file')
 export class UpdaloadController {
 
     @NotAuthentication()
