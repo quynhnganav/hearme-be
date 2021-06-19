@@ -16,6 +16,7 @@ export const permissionsObj: { [key in AppPermission]: string } = {
     APP_DOCTOR_USER: "Truy cập vào bác sĩ",
     APP_POST_DELETE: "Xóa bài viết của người dùng",
     APP_POST_LOCK: "Khóa bài viết của người dùng",
+    DOCTOR_USER_PENDING: 'Chờ làm doctor'
 }
 
 export const permissions: {

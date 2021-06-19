@@ -1,5 +1,5 @@
 import { Args, Context, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { UserGQL } from '../auth/decorator';
+import { DoctorGQL, UserGQL } from '../auth/decorator';
 import { User } from '../user/schema/user.schema';
 import { DoctorService } from './doctor.service';
 import { RegisterDoctorInputDTO } from './dto/RegisterDoctorInput.dto';
@@ -28,6 +28,13 @@ export class DoctorResolver {
             filter: { isDeleted: false }
         })
         return doctors
+    }
+
+    @Query()
+    async myDoctor(
+        @DoctorGQL() doctor: Doctor
+    ) {
+        return doctor
     }
 
     @Mutation()

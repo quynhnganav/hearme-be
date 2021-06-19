@@ -47,7 +47,6 @@ export class ScheduleResolver {
         @UserGQL() user: User
     ) {
         const schedule = await this.scheduleService.createSchedule(input, user._id)
-        console.log(schedule)
         return schedule
     }
 
@@ -83,6 +82,7 @@ export class ScheduleResolver {
     ) {
         const doctor = await this.doctorService.findByUserId(schedule.doctor._id)
         if (doctor) doctor.user = schedule.doctor
+        console.log(schedule)
         return doctor
     }
 

@@ -12,6 +12,7 @@ import { UserService } from "../user/user.service";
 import { PubSub } from 'graphql-subscriptions'
 import { DoctorModule } from '../doctor/doctor.module'
 import { DoctorService } from '../doctor/doctor.service'
+import { indexOf } from 'lodash'
 
 export const pubsub = new PubSub()
 
@@ -97,9 +98,8 @@ export default GraphQLModule.forRootAsync({
             const token = request.headers[HEADER_TOKEN_KEY]
             const { user, session } = await authService.verifyToken(token)
             if (!user) return { req: request, permissions, ...ctxWithValue }
-
             permissions = await (await authService.findPermissionOfUser(user)).map(p => p.code) || []
-            if (APP_PERMISSIONS.DOCTOR_USER in permissions) {
+            if ( indexOf(permissions, APP_PERMISSIONS.DOCTOR_USER) > -1 || indexOf(permissions, APP_PERMISSIONS.DOCTOR_USER_PENDING) > -1 ) {
               const doctor = await doctorService.findByUserId(user._id)
               if (doctor) ctxWithValue['doctor'] = doctor
             }

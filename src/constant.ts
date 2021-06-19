@@ -68,6 +68,7 @@ export const PERMS = {
         DOCTOR_DELETE: 'APP_DOCTOR_DELETE',
         DOCTOR_EDIT: 'APP_DOCTOR_EDIT',
         DOCTOR_USER: 'APP_DOCTOR_USER',
+        DOCTOR_USER_PENDING: 'DOCTOR_USER_PENDING'
     } as const,
 
 }

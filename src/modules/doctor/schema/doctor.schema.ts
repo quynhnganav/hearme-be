@@ -36,7 +36,22 @@ export class Doctor {
     @Prop({
         default: 0
     })
-    experience: number
+    exprience: number
+
+    @Prop({
+        default: ""
+    })
+    cvLink: string
+    
+    @Prop({
+        default: []
+    })
+    offeres?: string[]
+
+    @Prop({
+        default: []
+    })
+    specialties?: string[]
 
     @Prop({
         ref: DATABASE_COLLECTIONS.USER,

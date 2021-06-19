@@ -2,7 +2,6 @@ import { IsNumber, IsOptional, IsString, Max, Min } from "class-validator"
 import { RegisterDoctorInput } from "../../../schema";
 
 export class RegisterDoctorInputDTO implements RegisterDoctorInput {
-
     @IsString()
     @IsOptional()
     slogan?: string
@@ -12,8 +11,10 @@ export class RegisterDoctorInputDTO implements RegisterDoctorInput {
     note?: string
 
     @IsNumber()
-    @Min(0)
-    @Max(100)
-    experience: number
+    exprience: number
 
+    specialties: string[]
+    offeres: string[]
+    cvLink: string
+    
 }
