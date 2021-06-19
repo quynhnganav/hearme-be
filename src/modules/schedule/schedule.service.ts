@@ -67,7 +67,6 @@ export class ScheduleService {
     async createSchedule(input: BookScheduleInputDTO, user_id: string) {
         const { idDoctor } = input
         const doctor = await this.doctorService.findOne(idDoctor)
-        console.log(input)
         if (!doctor || isEqual(doctor.user._id, user_id)) throw new GQLDoctorNotFound()
         const newSchedule = new this.scheduleModel({
             ...input,
@@ -75,7 +74,9 @@ export class ScheduleService {
             client: new User({ _id: user_id })
         })
         await newSchedule.save()
-        return newSchedule
+        const findSc = await this.scheduleModel.findById(newSchedule._id).populate('client').populate('doctor')
+        // console.log(newSchedule)
+        return findSc
     }
 
     async myBookSchedules(user_id: string) {
@@ -125,5 +126,18 @@ export class ScheduleService {
         throw new GQLScheduleConfirmError()
     }
 
+
+    async rSScheduleOfDoctor(user_id: string, timespan: number) {
+        const timeStart = moment(timespan).startOf('day').valueOf()
+        const timeEnd = moment(timespan).endOf('day').valueOf()
+        const schedulesOfDoctor = await this.scheduleModel.find({
+            client: new User({ _id: user_id }),
+            $and: [
+                { time: { $gte: timeStart } },
+                { time: { $lt: timeEnd } }
+            ]
+        }).sort({ time: 1 })
+        const time = timeStart + 1000*60*60*6;
+    }
 
 }

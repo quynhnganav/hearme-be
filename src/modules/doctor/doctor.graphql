@@ -1,10 +1,11 @@
 type Query {
     doctors: [GDoctor]
     doctorsRS: [GDoctor]
+    myDoctor: GDoctor
 }
 
 type Mutation {
-    registerDoctor(input: RegisterDoctorInput!): [GDoctor]
+    registerDoctor(input: RegisterDoctorInput!): GDoctor
     confirmDoctor(id: ID!): [GDoctor]
     lookDoctor(id: ID!): [GDoctor]
 }
@@ -14,7 +15,10 @@ type GDoctor {
     code: String
     slogan: String
     note: String
-    experience: Int
+    exprience: Float
+    offeres: [String]
+    specialties: [String]
+    cvLink: String
     user: GUser
     isDeleted: Boolean
     isActive: Boolean
@@ -27,5 +31,8 @@ type GDoctor {
 input RegisterDoctorInput {
     slogan: String
     note: String
-    experience: Int!
+    cvLink: String
+    specialties: [String]
+    offeres: [String]
+    exprience: Float!
 }

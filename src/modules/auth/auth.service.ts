@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { DATABASE_COLLECTIONS } from '../../constant';
+import { AppPermission, DATABASE_COLLECTIONS } from '../../constant';
 import { User } from '../user/schema/user.schema';
 import { FilterQuery, isValidObjectId, Model } from "mongoose";
 import { Permission, PermissionDocument } from './schema/permission.schema';
@@ -155,7 +155,86 @@ export class AuthService {
                 _id: { $in: permissionIds }
             }
         })
+    }
 
+    async addPermissionOfUser(permissionCode: AppPermission, user_id: string) {
+        const permission = await this.findOnePermission({ filter: { code: permissionCode } })
+        if (!permission) return null
+        await this.clearPermi(permission._id, user_id)
+        await this.userService.updateOne({
+            id: user_id,
+            update: {
+                
+            },
+            context: {
+                currentUser: {
+                    _id: user_id
+                }
+            },
+            updateQuery: {
+                $push: {
+                    "permissions": permission._id
+                }
+            }
+        })
+    }
+
+    async removePermissionOfUser(permissionCode: AppPermission, user_id: string) {
+        const permission = await this.findOnePermission({ filter: { code: permissionCode}})
+        if (!permission) return null
+        await this.clearPermi(permission._id, user_id)
+        await this.userService.updateOne({
+            id: user_id,
+            update: {
+                
+            },
+            context: {
+                currentUser: {
+                    _id: user_id
+                }
+            },
+            updateQuery: {
+                $push: {
+                    "rejectPermissions": permission._id
+                }
+            }
+        })
+    }
+
+
+    async clearPermi(permissionId: string, user_id: string) {
+        await this.userService.updateOne({
+            id: user_id,
+            update: {
+                
+            },
+            context: {
+                currentUser: {
+                    _id: user_id
+                }
+            },
+            updateQuery: {
+                $pull: {
+                    "permissions": permissionId
+                }
+            }
+        })
+        await this.userService.updateOne({
+            id: user_id,
+            update: {
+                
+            },
+            context: {
+                currentUser: {
+                    _id: user_id
+                }
+            },
+            updateQuery: {
+                $pull: {
+                    "rejectPermissions": permissionId
+                }
+            }
+        })
     }
 
 }

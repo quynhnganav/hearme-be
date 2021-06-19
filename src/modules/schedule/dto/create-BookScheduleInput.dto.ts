@@ -16,5 +16,7 @@ export class BookScheduleInputDTO implements BookScheduleInput {
     @IsOptional()
     @IsString()
     note?: string;
+
+    duration: number;
     
 }

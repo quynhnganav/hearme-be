@@ -31,6 +31,12 @@ export class Schedule {
     time: number
 
     @Prop({
+        required: true,
+        default: 1000*60*30
+    })
+    duration: number
+
+    @Prop({
         ref: DATABASE_COLLECTIONS.USER,
         type: SchemaTypes.ObjectId,
     })

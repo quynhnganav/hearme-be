@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { hashSync } from 'bcrypt';
-import { FilterQuery, Model } from "mongoose";
+import { FilterQuery, Model, QueryOptions, UpdateQuery } from "mongoose";
 import { DATABASE_COLLECTIONS, HISTORY_ACTION } from '../../constant';
 import { AuthService } from '../auth/auth.service';
 import { HistoryService } from '../history/history.service';
@@ -85,8 +85,10 @@ export class UserService {
         update: UpdateUserInputDTO
         context?: any
         id: string
+        updateQuery?: UpdateQuery<UserDocument>
+        option?: QueryOptions
     }): Promise<User> {
-        const { id, update, context  } = args
+        const { id, update, context, updateQuery = {}, option = {} } = args
         const password = update?.password ? { password: hashSync(update.password, 11) } : {};
         const input: any = {
             ...update,
@@ -100,10 +102,12 @@ export class UserService {
                 isDeleted: false, 
             },
             {
-                $set: input
+                $set: input,
+                ...updateQuery
             },
             {
-                new: true
+                new: true,
+                ...option
             }
         ).exec()
         return user

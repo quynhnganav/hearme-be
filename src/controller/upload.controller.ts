@@ -48,6 +48,31 @@ export class UpdaloadController {
     }
 
     @NotAuthentication()
+    @Post('upload-file')
+    @UseInterceptors(
+        FileInterceptor('file', {
+            storage: diskStorage({
+                destination:
+                    process.env.NODE_ENV === 'production'
+                        ? '/var/www/data/files/cfr_test/'
+                        : './uploads/files/',
+                filename(_, file, callback) {
+                    callback(null, IDFactory.createID()() + extname(file.originalname))
+                }
+            })
+        })
+    )
+    @HttpCode(201)
+    async uploadFile(@UploadedFile() file) {
+        console.log(file);
+        if (!file) return null;
+        if (file.mimetype.includes('image')) {
+            return file.path.split('/').pop()
+        }
+        return file
+    }
+
+    @NotAuthentication()
     @Get('download')
     @HttpCode(200)
     downloadImage(
