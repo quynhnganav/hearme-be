@@ -9,7 +9,7 @@ deploy:
   tags:
     - cicd
   only:
-    - cicd
+    - master
   script:
    - npm install
    - echo "MONGO_URI=${MONGO_URI}" >> .env.production 
