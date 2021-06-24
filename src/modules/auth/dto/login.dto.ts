@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, MinLength } from "class-validator";
-import { LoginInput } from "src/schema";
+import { LoginInput } from "../../../schema";
 
 export class LoginInputDTO implements LoginInput {
 

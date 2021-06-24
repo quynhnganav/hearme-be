@@ -1,10 +1,12 @@
 import { Parent, Query, ResolveField, Resolver, Mutation, Args, Context } from '@nestjs/graphql';
-import { AuthenticationInfo } from 'src/schema';
+import { AuthenticationInfo } from '../../schema';
 import { MicroserviceService } from '../microservices/microservice.service';
+import { EnumTypeSeesion } from '../session/schema/session.schema';
+import { User } from '../user/schema/user.schema';
 import { UserService } from '../user/user.service';
 import { GQLUnauthenticatedError } from './auth.error';
 import { AuthService } from './auth.service';
-import { NotAuthentication } from './decorator';
+import { NotAuthentication, UserGQL } from './decorator';
 import { LoginInputDTO } from './dto/login.dto';
 import { Permission } from './schema/permission.schema';
 import { Role, RoleDocument } from './schema/role.schema';
@@ -17,6 +19,17 @@ export class AuthResolver {
         private readonly userService: UserService,
         private readonly micrService: MicroserviceService
     ) { }
+
+    @Query()
+    async genTokenMeeting(
+        @UserGQL() user: User
+    ) {
+        const token = await this.authService.signUserToken(user._id, EnumTypeSeesion.MEETINGAUTH);
+        return {
+            token,
+            userId: user._id
+        };
+    }
 
     @Query()
     @NotAuthentication()

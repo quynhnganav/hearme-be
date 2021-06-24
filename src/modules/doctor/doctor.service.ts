@@ -40,7 +40,7 @@ export class DoctorService {
             user: new User({ _id: id }),
             // isActive: true,
             isDeleted: false
-        }).exec()
+        }).populate('user').exec()
         // console.log(doctor)
         return doctor
     }
@@ -81,6 +81,10 @@ export class DoctorService {
             new: true
         })
         return doctor
+    }
+
+    async getDoctorRs(user_id: string) {
+
     }
 
 }

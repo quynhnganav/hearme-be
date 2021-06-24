@@ -2,14 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { isEqual } from "lodash";
 import { FilterQuery, Model, UpdateQuery } from "mongoose";
-import { EnumStatusSchedule } from "src/schema";
+import { EnumStatusSchedule } from "../../schema";
 import { DATABASE_COLLECTIONS } from "../../constant";
 import { DoctorService } from "../doctor/doctor.service";
 import { GQLDoctorNotFound } from "../doctor/errors";
 import { Doctor } from "../doctor/schema/doctor.schema";
 import { User } from "../user/schema/user.schema";
 import { BookScheduleInputDTO } from "./dto/create-BookScheduleInput.dto";
-import { GQLScheduleNotFound, GQLScheduleConfirmError } from "./errors";
+import { GQLScheduleNotFound, GQLScheduleConfirmError, GQLScheduleSpamError } from "./errors";
 import { Schedule, ScheduleDocument } from "./schema/schedule.schema";
 import * as moment from 'moment'
 
@@ -66,6 +66,15 @@ export class ScheduleService {
 
     async createSchedule(input: BookScheduleInputDTO, user_id: string) {
         const { idDoctor } = input
+        const user_spam = await this.scheduleModel.find({
+            client: new User({ _id: user_id }),
+            isDeleted: false,
+            $and: [
+                { time: { $gt: moment().startOf('day').valueOf() } },
+                { time: { $lt: moment().endOf('day').valueOf() } }
+            ]
+        }).countDocuments()
+        if (user_spam >=3) throw new GQLScheduleSpamError()
         const doctor = await this.doctorService.findOne(idDoctor)
         if (!doctor || isEqual(doctor.user._id, user_id)) throw new GQLDoctorNotFound()
         const newSchedule = new this.scheduleModel({
@@ -84,7 +93,7 @@ export class ScheduleService {
         const schedules = await this.scheduleModel.find({
             client,
             isDeleted: false
-        }).populate('client').populate('doctor')
+        }).sort({ time: -1 }).populate('client').populate('doctor')
         return schedules
     }
 

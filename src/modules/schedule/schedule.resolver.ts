@@ -82,7 +82,6 @@ export class ScheduleResolver {
     ) {
         const doctor = await this.doctorService.findByUserId(schedule.doctor._id)
         if (doctor) doctor.user = schedule.doctor
-        console.log(schedule)
         return doctor
     }
 

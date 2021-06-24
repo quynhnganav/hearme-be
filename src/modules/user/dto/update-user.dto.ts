@@ -1,5 +1,5 @@
 import { IsBoolean, IsOptional, IsString } from "class-validator";
-import { GUserInput } from "src/schema";
+import { GUserInput } from "../../../schema";
 
 export class UpdateUserInputDTO implements GUserInput {
 

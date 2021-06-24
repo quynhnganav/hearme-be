@@ -1,5 +1,5 @@
 import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
-import { BookScheduleInput, EnumChannelSchedule } from "src/schema";
+import { BookScheduleInput, EnumChannelSchedule } from "../../../schema";
 
 export class BookScheduleInputDTO implements BookScheduleInput {
 

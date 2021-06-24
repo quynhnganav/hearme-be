@@ -1,6 +1,7 @@
 type Query {
     getPermissions: [GPermission]
     getRoles: [GRole]
+    genTokenMeeting: AuthenticationInfo
 }
 
 type Mutation {
