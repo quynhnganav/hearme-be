@@ -74,7 +74,7 @@ export class ScheduleService {
                 { time: { $lt: moment().endOf('day').valueOf() } }
             ]
         }).countDocuments()
-        if (user_spam >=3) throw new GQLScheduleSpamError()
+        // if (user_spam >=3) throw new GQLScheduleSpamError()
         const doctor = await this.doctorService.findOne(idDoctor)
         if (!doctor || isEqual(doctor.user._id, user_id)) throw new GQLDoctorNotFound()
         const newSchedule = new this.scheduleModel({
@@ -92,6 +92,36 @@ export class ScheduleService {
         const client = new User({ _id: user_id })
         const schedules = await this.scheduleModel.find({
             client,
+            isDeleted: false
+        }).sort({ time: -1 }).populate('client').populate('doctor')
+        return schedules
+    }
+
+    async myBookSchedulesApprove(user_id: string) {
+        const client = new User({ _id: user_id })
+        const doctor = new User({ _id: user_id })
+        const schedules = await this.scheduleModel.find({
+            $or: [
+                { client },
+                { doctor }
+            ],
+            status: { $ne: EnumStatusSchedule.ACCEPTED },
+            time: { $gt: moment().valueOf() },
+            isActive: true,
+            isDeleted: false
+        }).sort({ time: -1 }).populate('client').populate('doctor')
+        return schedules
+    }
+
+    async myBookSchedulesUpcoming(user_id: string) {
+        const client = new User({ _id: user_id })
+        const schedules = await this.scheduleModel.find({
+            client,
+            $or: [
+                { status: EnumStatusSchedule.ACCEPTED },
+                { time: { $lte: moment().valueOf() } }
+            ],
+            isActive: true,
             isDeleted: false
         }).sort({ time: -1 }).populate('client').populate('doctor')
         return schedules
@@ -120,7 +150,12 @@ export class ScheduleService {
     }
 
     async confirm(id: string, client_id: string) {
-        const schedule = await (await this.findOne({ _id: id, isActive: true })).populate('client').populate('doctor')
+        const schedule = await (await this.findOne({ 
+            _id: id, 
+            status: { $ne: EnumStatusSchedule.ACCEPTED },
+            isActive: true, 
+        }))?.populate('client')?.populate('doctor')
+        console.log(schedule)
         if (!schedule || (!isEqual(schedule.client._id, client_id) && !isEqual(schedule.doctor._id, client_id))) throw new GQLScheduleNotFound()
         if (isEqual(client_id, schedule.client._id) && schedule.status === EnumStatusSchedule.WAITING_CUSTOMER_CONFIRM) {
             return this.updateOne({ _id: id },

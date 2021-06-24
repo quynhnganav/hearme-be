@@ -26,6 +26,22 @@ export class ScheduleResolver {
     }
 
     @Query()
+    async myBookSchedulesApprove(
+        @UserGQL() user: User
+    ) {
+        const myBook = await this.scheduleService.myBookSchedulesApprove(user._id)
+        return myBook
+    }
+
+    @Query()
+    async myBookSchedulesUpcoming(
+        @UserGQL() user: User
+    ) {
+        const myBook = await this.scheduleService.myBookSchedulesUpcoming(user._id)
+        return myBook
+    }
+
+    @Query()
     @IsDoctor()
     async myBeBookSchedules(
         @DoctorGQL() doctor: Doctor

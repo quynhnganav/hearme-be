@@ -1,6 +1,8 @@
 type Query {
     schedules: [GSchedule]
     myBookSchedules: [GSchedule]
+    myBookSchedulesApprove: [GSchedule]
+    myBookSchedulesUpcoming: [GSchedule]
     myBeBookSchedules: [GSchedule]
     rSScheduleOfDoctor(time: Float): [Float]
 }
