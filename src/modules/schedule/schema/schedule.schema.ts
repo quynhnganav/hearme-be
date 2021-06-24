@@ -87,7 +87,7 @@ export class Schedule {
 
     @Prop({
         required: true,
-        default: false
+        default: true
     })
     isActive: boolean
 
