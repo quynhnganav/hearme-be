@@ -1,4 +1,4 @@
-import { GUserInput } from "src/schema";
+import { GUserInput } from "../../../schema";
 
 export class CreateUserInputDTO implements GUserInput {
     

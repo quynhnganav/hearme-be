@@ -1,4 +1,4 @@
-import { GPostInput } from "src/schema";
+import { GPostInput } from "../../../schema";
 
 export class UpdatePostInputDTO implements GPostInput {
  

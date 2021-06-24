@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString, Max, Min } from "class-validator"
+import { IsNumber, IsOptional, IsString } from "class-validator"
 import { RegisterDoctorInput } from "../../../schema";
 
 export class RegisterDoctorInputDTO implements RegisterDoctorInput {

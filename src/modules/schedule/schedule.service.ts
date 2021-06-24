@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { isEqual } from "lodash";
 import { FilterQuery, Model, UpdateQuery } from "mongoose";
-import { EnumStatusSchedule } from "src/schema";
+import { EnumStatusSchedule } from "../../schema";
 import { DATABASE_COLLECTIONS } from "../../constant";
 import { DoctorService } from "../doctor/doctor.service";
 import { GQLDoctorNotFound } from "../doctor/errors";

@@ -14,6 +14,7 @@ deploy:
    - npm install
    - echo "MONGO_URI=${MONGO_URI}" >> .env.production 
    - echo "APP_PORT=3000" >> .env.production 
+   - npm run gen
    - npm run build
    - ssh $SSH_USER@$SSH_SERVER_IP "/bin/mkdir -p ${PATH_TO_PROJECT}"
    - rsync -a -e "ssh" . $SSH_USER@$SSH_SERVER_IP:$PATH_TO_PROJECT --delete

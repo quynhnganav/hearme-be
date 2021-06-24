@@ -4,7 +4,7 @@ import { Doctor } from 'src/modules/doctor/schema/doctor.schema'
 import { DATABASE_COLLECTIONS } from '../../../constant'
 import { User } from '../../user/schema/user.schema'
 import { EnumChannelSchedule, EnumStatusSchedule } from "../../../schema";
-import { IDFactory } from 'src/helper'
+import { IDFactory } from '../../../helper'
 
 export type ScheduleDocument = Schedule & Document
 

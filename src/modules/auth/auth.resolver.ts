@@ -1,5 +1,5 @@
 import { Parent, Query, ResolveField, Resolver, Mutation, Args, Context } from '@nestjs/graphql';
-import { AuthenticationInfo } from 'src/schema';
+import { AuthenticationInfo } from '../../schema';
 import { MicroserviceService } from '../microservices/microservice.service';
 import { EnumTypeSeesion } from '../session/schema/session.schema';
 import { User } from '../user/schema/user.schema';
