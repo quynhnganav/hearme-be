@@ -18,8 +18,5 @@ deploy:
    - npm run build
    - ssh $SSH_USER@$SSH_SERVER_IP "/bin/mkdir -p ${PATH_TO_PROJECT}"
    - rsync -a -e "ssh" . $SSH_USER@$SSH_SERVER_IP:$PATH_TO_PROJECT --delete
-   - ssh $SSH_USER@$SSH_SERVER_IP
-   - pm2 stop all
-   - cd ${PATH_TO_PROJECT}
-   - pm2 start dist/main.js
-   - exit
+   - ssh $SSH_USER@$SSH_SERVER_IP "cd ${PATH_TO_PROJECT}; pm2 stop all; pm2 start dist/main.js"
+
