@@ -5,6 +5,10 @@ import { DATABASE_COLLECTIONS } from '../../../constant'
 
 export type SessionDocument = Session & Document
 
+export enum EnumTypeSeesion {
+    LOGIN = "LOGIN",
+    MEETINGAUTH = "MEETINGAUTH"
+}
 @Schema({
     collection: DATABASE_COLLECTIONS.SESSION,
     timestamps: true
@@ -40,6 +44,13 @@ export class Session {
         default: false
     })
     isDeleted: boolean
+
+    @Prop({
+        type: EnumTypeSeesion,
+        enum: EnumTypeSeesion,
+        default: EnumTypeSeesion.LOGIN
+    })
+    type: EnumTypeSeesion
 
     @Prop({
         ref: DATABASE_COLLECTIONS.USER,

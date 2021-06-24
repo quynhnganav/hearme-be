@@ -70,6 +70,11 @@ export class Schedule {
     note?: string
 
     @Prop({
+        default: false
+    })
+    confirm?: boolean
+
+    @Prop({
         default: null
     })
     cancelBy: 'DOCTOR' | 'CLIENT'

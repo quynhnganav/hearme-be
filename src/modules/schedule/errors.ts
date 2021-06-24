@@ -38,3 +38,16 @@ export class GQLScheduleConfirmError extends ApolloError {
         super(message, code)
     }
 }
+
+export class GQLScheduleSpamError extends ApolloError {
+    constructor(args?: {
+        message?: string
+        code?: string
+    }) {
+        const { code, message } = args || {
+            message: 'User is Spam',
+            code: 'GQL_SCHEDULE_SPAM_ERROR'
+        }
+        super(message, code)
+    }
+}

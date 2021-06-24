@@ -13,6 +13,7 @@ import { differenceBy, uniqBy } from "lodash";
 import { UserService } from '../user/user.service';
 import { SessionService } from '../session/session.service';
 import { JwtService } from "@nestjs/jwt";
+import { EnumTypeSeesion } from '../session/schema/session.schema';
 
 
 @Injectable()
@@ -76,9 +77,10 @@ export class AuthService {
         return compare(rawPwd, hashedPwd)
     }
 
-    public async signUserToken(userId: string): Promise<string> {
+    public async signUserToken(userId: string, typeSeesion?: EnumTypeSeesion): Promise<string> {
         const session = await this.sessionService.createSession({
             createdBy: new User({ _id: userId }),
+            type: typeSeesion ?? EnumTypeSeesion.LOGIN
         })
         const token = await this.jwtService.sign(
             { userId, sessionId: session._id }

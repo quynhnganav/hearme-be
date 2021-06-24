@@ -22,10 +22,12 @@ export class DoctorResolver {
     }
 
     @Query()
-    async doctorsRS(): Promise<Doctor[]> {
+    async doctorsRS(
+        @UserGQL() user: User
+    ): Promise<Doctor[]> {
         const doctors = await this.doctorService.findAll({
             sort: { createdAt: -1 },
-            filter: { isDeleted: false }
+            filter: { isDeleted: false, isActive: true, user: { $ne: new User({ _id: user._id }) } }
         })
         return doctors
     }
