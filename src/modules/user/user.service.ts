@@ -19,6 +19,12 @@ export class UserService {
         private readonly historyService: HistoryService,
     ) { }
 
+    public async findUserMatchAny(matchConditions: Partial<User>[]) {
+        const foundUser = await this.userModel.findOne({ $or: matchConditions })
+        return foundUser
+      }
+    
+
     async findAll(args?: {
         filter: FilterQuery<UserDocument>
         sort?: any
@@ -67,7 +73,7 @@ export class UserService {
         }
     }
 
-    async saveUser(user, context?: any): Promise<User> {
+    async saveUser(user, context?: any): Promise<User | UserDocument> {
         const newUser = await this.userModel.create(user);
         // await this.historyService.createHistory({
         //     _id: null,

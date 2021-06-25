@@ -40,6 +40,11 @@ export class User{
     })
     dob?: number
 
+    @Prop({
+        default: []
+    })
+    socials: any[]
+
     @Prop()
     picture?: string
 

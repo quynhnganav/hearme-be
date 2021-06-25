@@ -1,4 +1,5 @@
 import { Parent, Query, ResolveField, Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { ROLES } from 'src/constant';
 import { AuthenticationInfo } from '../../schema';
 import { MicroserviceService } from '../microservices/microservice.service';
 import { EnumTypeSeesion } from '../session/schema/session.schema';
@@ -37,6 +38,45 @@ export class AuthResolver {
         const roles = await this.authService.findAllRole();
         return roles;
     }
+
+    @NotAuthentication()
+    @Mutation()
+    async loginGoogle(@Args('token') token: string): Promise<AuthenticationInfo> {
+        const payload = await this.authService.verifyGoogleToken(token);
+        if (!payload || !payload.email) throw new GQLUnauthenticatedError();
+        let user: User
+        let foundUser = await this.userService.findUserMatchAny([
+            { email: payload.email.toLowerCase() },
+            { username: payload.email.toLowerCase() }
+        ]);
+        if (!foundUser) {
+            const rolesOfUser = await this.authService.findAllRole({ filter: { code: { $in: ["APP_MEMBER"] } } });
+
+            user = await this.userService.saveUser({
+                username: payload.email,
+                email: payload.email,
+                firstName: payload.given_name,
+                lastName: payload.family_name,
+                password: null,
+                roles: rolesOfUser,
+                isVerified: true,
+                picture: payload.picture,
+                socials: [{
+                    name: "GOOGLE",
+                    hash: payload.at_hash
+                }]
+            });
+        } else {
+            if (foundUser.isDeleted) throw new GQLUnauthenticatedError();
+            if (foundUser.isLocked) throw new GQLUnauthenticatedError();
+        }
+        const tokenSigned = await this.authService.signUserToken(user?._id)
+        return {
+            token: tokenSigned,
+            userId: user?._id
+        }
+    }
+
 
     @Mutation()
     @NotAuthentication()

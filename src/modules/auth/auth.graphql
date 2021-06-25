@@ -6,6 +6,7 @@ type Query {
 
 type Mutation {
     login(info: LoginInput!): AuthenticationInfo
+    loginGoogle(token: String!): AuthenticationInfo
     logout: Boolean
 }
 

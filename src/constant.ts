@@ -1,5 +1,6 @@
 
 export const HEADER_TOKEN_KEY = "access-token"
+export const CLIENT_ID_GOOGLE = '860744680143-n03ddlb2pm5ra2tqgh435pvkmq7pnhn6.apps.googleusercontent.com'
 
 export enum EnumDecorator {
     PERMISSIONS,
