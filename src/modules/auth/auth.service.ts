@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { AppPermission, DATABASE_COLLECTIONS } from '../../constant';
+import { AppPermission, DATABASE_COLLECTIONS, CLIENT_ID_GOOGLE } from '../../constant';
 import { User } from '../user/schema/user.schema';
 import { FilterQuery, isValidObjectId, Model } from "mongoose";
 import { Permission, PermissionDocument } from './schema/permission.schema';
@@ -14,10 +14,12 @@ import { UserService } from '../user/user.service';
 import { SessionService } from '../session/session.service';
 import { JwtService } from "@nestjs/jwt";
 import { EnumTypeSeesion } from '../session/schema/session.schema';
-
+import { OAuth2Client, TokenPayload } from "google-auth-library";
 
 @Injectable()
 export class AuthService {
+
+    private clientGoogle = new OAuth2Client(CLIENT_ID_GOOGLE);
 
     constructor(
         @InjectModel(DATABASE_COLLECTIONS.PERMISSION) private permissionModel: Model<PermissionDocument>,
@@ -64,6 +66,21 @@ export class AuthService {
             session
         }
     }
+
+    async verifyGoogleToken(idToken: string): Promise<TokenPayload> {
+        try {
+            const ticket = await this.clientGoogle.verifyIdToken({
+                idToken,
+                audience: [CLIENT_ID_GOOGLE],
+            });
+            const payload = ticket.getPayload();
+            return payload;
+        } catch (error) {
+            console.log(error)
+            return undefined;
+        }
+    }
+
 
     public async findPermission(userId: string): Promise<Permission[]> {
         return []
@@ -166,7 +183,7 @@ export class AuthService {
         await this.userService.updateOne({
             id: user_id,
             update: {
-                
+
             },
             context: {
                 currentUser: {
@@ -182,13 +199,13 @@ export class AuthService {
     }
 
     async removePermissionOfUser(permissionCode: AppPermission, user_id: string) {
-        const permission = await this.findOnePermission({ filter: { code: permissionCode}})
+        const permission = await this.findOnePermission({ filter: { code: permissionCode } })
         if (!permission) return null
         await this.clearPermi(permission._id, user_id)
         await this.userService.updateOne({
             id: user_id,
             update: {
-                
+
             },
             context: {
                 currentUser: {
@@ -208,7 +225,7 @@ export class AuthService {
         await this.userService.updateOne({
             id: user_id,
             update: {
-                
+
             },
             context: {
                 currentUser: {
@@ -224,7 +241,7 @@ export class AuthService {
         await this.userService.updateOne({
             id: user_id,
             update: {
-                
+
             },
             context: {
                 currentUser: {

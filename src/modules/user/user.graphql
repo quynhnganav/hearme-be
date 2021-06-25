@@ -18,6 +18,7 @@ type GUser {
     email: String
     role: GRoleOfUser
     permissions: [String]
+    picture: String
     isLocked: Boolean
     isActive: Boolean
     createdAt: Float
