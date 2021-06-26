@@ -12,6 +12,7 @@ import { BookScheduleInputDTO } from "./dto/create-BookScheduleInput.dto";
 import { GQLScheduleNotFound, GQLScheduleConfirmError, GQLScheduleSpamError } from "./errors";
 import { Schedule, ScheduleDocument } from "./schema/schedule.schema";
 import * as moment from 'moment'
+import { EnumEvent, PubSubSocket } from "../pubsub/pubsub.gateway";
 
 
 @Injectable()
@@ -19,7 +20,8 @@ export class ScheduleService {
 
     constructor(
         @InjectModel(DATABASE_COLLECTIONS.SCHEDULE) private readonly scheduleModel: Model<ScheduleDocument>,
-        private readonly doctorService: DoctorService
+        private readonly doctorService: DoctorService,
+        private readonly pubSub: PubSubSocket
     ) { }
 
 
@@ -84,6 +86,7 @@ export class ScheduleService {
         })
         await newSchedule.save()
         const findSc = await this.scheduleModel.findById(newSchedule._id).populate('client').populate('doctor')
+        await this.pubSub.sendMessageToUser(EnumEvent.NEW_SCHEDULES, doctor.user._id, "New schedule")
         // console.log(newSchedule)
         return findSc
     }
