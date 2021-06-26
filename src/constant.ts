@@ -19,7 +19,8 @@ export enum DATABASE_COLLECTIONS {
     COMMENT = 'comments',
     MESSAGE = 'messages',
     DOCTOR = 'doctors',
-    SCHEDULE = 'schedules'
+    SCHEDULE = 'schedules',
+    NOTIFICATION = 'notifications'
 }
 
 export enum HISTORY_ACTION {

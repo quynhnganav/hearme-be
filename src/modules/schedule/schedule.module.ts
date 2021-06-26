@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { DATABASE_COLLECTIONS } from "../../constant";
 import { DoctorModule } from "../doctor/doctor.module";
+import { PubsubModule } from "../pubsub/pubsub.module";
 import { UserModule } from "../user/user.module";
 import { ScheduleResolver } from "./schedule.resolver";
 import { ScheduleService } from "./schedule.service";
@@ -13,7 +14,8 @@ import { ScheduleSchema } from "./schema/schedule.schema";
             { name: DATABASE_COLLECTIONS.SCHEDULE, schema: ScheduleSchema }
         ]),
         UserModule,
-        DoctorModule
+        DoctorModule,
+        PubsubModule
     ],
     providers: [ScheduleService, ScheduleResolver],
     exports: [ScheduleService]
