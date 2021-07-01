@@ -32,7 +32,7 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) { }
 
-    async sendMail(email: string, name: string) {
+    async sendMail(email: string, name: string, time?: string) {
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
             port: 587,
@@ -47,7 +47,7 @@ export class AuthService {
             to: email,
             subject: 'Welcome to hearMe',
             text: 'You recieved message from vanquangmai20@gmail.com',
-            html: `<h1>Dear ${name},</h1><p>Welcome to hearMe, designed by ClosureJS</p><p>Login at: ${moment().format("HH:mm DD-MM-YYYY")}</p>`
+            html: `<h1>Dear ${name},</h1><p>Welcome to hearMe, designed by ClosureJS</p><p>Login at: ${time || moment().format("HH:mm DD-MM-YYYY")}</p>`
         }
         transporter.sendMail(mainOptions, function (err, info) {
             if (err) {

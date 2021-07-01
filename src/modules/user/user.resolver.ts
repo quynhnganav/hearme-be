@@ -9,6 +9,8 @@ import { IsAuthentication, NotAuthentication, RequirePermissions } from '../auth
 import { APP_PERMISSIONS, PERMS } from '../../constant';
 import { CreateUserInputDTO } from './dto/create-user.dto';
 import { UpdateUserInputDTO } from './dto/update-user.dto';
+import { TelegramService } from '../telegram/telegram.service';
+import * as moment from "moment";
 
 @Resolver('GUser')
 export class UserResolver {
@@ -16,11 +18,16 @@ export class UserResolver {
     constructor(
         private readonly authService: AuthService,
         private readonly userService: UserService,
+        private readonly telegramService: TelegramService
     ) { }
 
     @Query()
     async me(@Context() ctx): Promise<User> {
         const { currentUser } = ctx;
+        // this.telegramService.sendMessage(
+        //     "-577272799",
+        //     `[${currentUser.email}] - ${currentUser.firstName} ${currentUser.lastName}: Load at ${moment().format("HH:mm DD-MM-YYYY")}`
+        // )
         return currentUser;
     }
 
@@ -55,7 +62,7 @@ export class UserResolver {
         @Args('id') id: string
     ): Promise<User> {
         const newUser = await this.userService.updateOne({
-            id, 
+            id,
             update,
             context,
         })

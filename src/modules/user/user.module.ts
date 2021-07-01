@@ -6,6 +6,7 @@ import { DATABASE_COLLECTIONS } from '../../constant';
 import { UserSchema } from './schema/user.schema';
 import { AuthModule } from "../auth/auth.module";
 import { HistoryModule } from '../history/history.module';
+import { TelegramModule } from '../telegram/telegram.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { HistoryModule } from '../history/history.module';
       { name: DATABASE_COLLECTIONS.USER, schema: UserSchema }
     ]),
     forwardRef(() => AuthModule),
-    HistoryModule
+    HistoryModule,
+    TelegramModule
   ],
   providers: [UserService, UserResolver],
   exports: [UserService],

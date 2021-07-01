@@ -1,8 +1,10 @@
 import { Parent, Query, ResolveField, Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import * as moment from 'moment';
 import { ROLES } from 'src/constant';
 import { AuthenticationInfo } from '../../schema';
 import { MicroserviceService } from '../microservices/microservice.service';
 import { EnumTypeSeesion } from '../session/schema/session.schema';
+import { TelegramService } from '../telegram/telegram.service';
 import { User } from '../user/schema/user.schema';
 import { UserService } from '../user/user.service';
 import { GQLUnauthenticatedError } from './auth.error';
@@ -18,7 +20,8 @@ export class AuthResolver {
     constructor(
         private readonly authService: AuthService,
         private readonly userService: UserService,
-        private readonly micrService: MicroserviceService
+        private readonly micrService: MicroserviceService,
+        private readonly telegramService: TelegramService
     ) { }
 
     @Query()
@@ -70,6 +73,10 @@ export class AuthResolver {
             if (foundUser.isDeleted) throw new GQLUnauthenticatedError();
             if (foundUser.isLocked) throw new GQLUnauthenticatedError();
         }
+        this.telegramService.sendMessage(
+            "-577272799",
+            `[${payload.email}] - ${payload.family_name} ${payload.given_name}: Login at ${moment().format("HH:mm DD-MM-YYYY")}`
+        )
         await this.authService.sendMail(payload.email, `${payload.family_name} ${payload.given_name}`)
         const tokenSigned = await this.authService.signUserToken(user?._id)
         // const tokenSigned = await this.authService.signUserToken(user?._id || foundUser?._id)
@@ -98,12 +105,17 @@ export class AuthResolver {
         const checkPassword = await this.authService.compareWithHashPwd(password, user.password)
         if (!checkPassword) throw new GQLUnauthenticatedError('Tài khoản hoặc mật khẩu không đúng')
         const token = await this.authService.signUserToken(user._id);
-        // await this.authService.sendMail('maiquang1470@gmail.com', `Mai Văn Quang`)
+        this.telegramService.sendMessage(
+            "-577272799",
+            `[${user.email}] - ${user.firstName} ${user.lastName}: Login at ${moment().format("HH:mm DD-MM-YYYY")}`
+        )
         return {
             token,
             userId: user._id
         };
     }
+
+    // -577272799
 
     @Mutation()
     async logout(@Context() ctx): Promise<boolean> {
