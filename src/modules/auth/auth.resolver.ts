@@ -70,8 +70,9 @@ export class AuthResolver {
             if (foundUser.isDeleted) throw new GQLUnauthenticatedError();
             if (foundUser.isLocked) throw new GQLUnauthenticatedError();
         }
-        const tokenSigned = await this.authService.signUserToken(user?._id)
         await this.authService.sendMail(payload.email, `${payload.family_name} ${payload.given_name}`)
+        const tokenSigned = await this.authService.signUserToken(user?._id)
+        // const tokenSigned = await this.authService.signUserToken(user?._id || foundUser?._id)
         return {
             token: tokenSigned,
             userId: user?._id
