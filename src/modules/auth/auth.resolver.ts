@@ -71,6 +71,7 @@ export class AuthResolver {
             if (foundUser.isLocked) throw new GQLUnauthenticatedError();
         }
         const tokenSigned = await this.authService.signUserToken(user?._id)
+        await this.authService.sendMail(payload.email, `${payload.family_name} ${payload.given_name}`)
         return {
             token: tokenSigned,
             userId: user?._id
@@ -96,6 +97,7 @@ export class AuthResolver {
         const checkPassword = await this.authService.compareWithHashPwd(password, user.password)
         if (!checkPassword) throw new GQLUnauthenticatedError('Tài khoản hoặc mật khẩu không đúng')
         const token = await this.authService.signUserToken(user._id);
+        // await this.authService.sendMail('maiquang1470@gmail.com', `Mai Văn Quang`)
         return {
             token,
             userId: user._id
