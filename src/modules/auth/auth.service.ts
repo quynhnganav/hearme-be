@@ -15,6 +15,8 @@ import { SessionService } from '../session/session.service';
 import { JwtService } from "@nestjs/jwt";
 import { EnumTypeSeesion } from '../session/schema/session.schema';
 import { OAuth2Client, TokenPayload } from "google-auth-library";
+import * as nodemailer from "nodemailer";
+import * as moment from 'moment';
 
 @Injectable()
 export class AuthService {
@@ -29,6 +31,34 @@ export class AuthService {
         private readonly sessionService: SessionService,
         private readonly jwtService: JwtService
     ) { }
+
+    async sendMail(email: string, name: string) {
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
+            auth: {
+                user: 'vanquangmai20@gmail.com',
+                pass: 'wosgwbrjwaypgnvb',
+            }
+        })
+        var mainOptions = { // thiết lập đối tượng, nội dung gửi mail
+            from: 'hearMe - ClosureJS Team',
+            to: email,
+            subject: 'Welcome to hearMe',
+            text: 'You recieved message from vanquangmai20@gmail.com',
+            html: `<h1>Dear ${name},</h1><p>Welcome to hearMe, designed by ClosureJS</p><p>Login at: ${moment().format("HH:mm DD-MM-YYYY")}</p>`
+        }
+        transporter.sendMail(mainOptions, function (err, info) {
+            if (err) {
+                console.log(err);
+                // res.redirect('/');
+            } else {
+                console.log(info);
+                // res.redirect('/');
+            }
+        });
+    }
 
     async logout(sessionId: string, userUpdate: User): Promise<boolean> {
         try {
