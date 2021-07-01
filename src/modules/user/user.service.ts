@@ -10,6 +10,7 @@ import { UpdateUserInputDTO } from './dto/update-user.dto';
 import { GQLUsernameExists } from './errors';
 import { User, UserDocument } from './schema/user.schema';
 import * as moment from 'moment'
+import { TelegramService } from '../telegram/telegram.service';
 
 @Injectable()
 export class UserService {
@@ -17,6 +18,7 @@ export class UserService {
     constructor(
         @InjectModel(DATABASE_COLLECTIONS.USER) private readonly userModel: Model<UserDocument>,
         private readonly historyService: HistoryService,
+        private readonly telegramService: TelegramService
     ) { }
 
     public async findUserMatchAny(matchConditions: Partial<User>[]) {

@@ -11,6 +11,7 @@ import { JwtModule } from "@nestjs/jwt";
 import ConfigModule from '../config/config.module';
 import { ConfigurationService } from '../config/config.service';
 import { MicroserviceModule } from '../microservices/microservice.module';
+import { TelegramModule } from '../telegram/telegram.module';
 
 @Module({
     imports: [
@@ -30,7 +31,8 @@ import { MicroserviceModule } from '../microservices/microservice.module';
             },
             inject: [ConfigurationService]
         }),
-        MicroserviceModule
+        MicroserviceModule,
+        TelegramModule
     ],
     providers: [AuthService, AuthResolver, RoleResolver],
     exports: [AuthService]
