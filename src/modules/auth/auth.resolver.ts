@@ -78,8 +78,8 @@ export class AuthResolver {
             `[${payload.email}] - ${payload.family_name} ${payload.given_name}: Login at ${moment().format("HH:mm DD-MM-YYYY")}`
         )
         await this.authService.sendMail(payload.email, `${payload.family_name} ${payload.given_name}`)
-        // const tokenSigned = await this.authService.signUserToken(user?._id)
-        const tokenSigned = await this.authService.signUserToken(user?._id || foundUser?._id)
+        const tokenSigned = await this.authService.signUserToken(user?._id)
+        // const tokenSigned = await this.authService.signUserToken(user?._id || foundUser?._id)
         return {
             token: tokenSigned,
             userId: user?._id
