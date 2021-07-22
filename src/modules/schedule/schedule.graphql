@@ -4,7 +4,7 @@ type Query {
     myBookSchedulesApprove: [GSchedule]
     myBookSchedulesUpcoming: [GSchedule]
     myBeBookSchedules: [GSchedule]
-    rSScheduleOfDoctor(time: Float): [Float]
+    rSScheduleOfDoctor(time: Float): [GAppointment]
 }
 
 type Mutation {
@@ -14,13 +14,18 @@ type Mutation {
     cancelSchedule(id: ID!): GSchedule
 }
 
+type GAppointment {
+    from: Float
+    to: Float
+    date: Float
+}
+
 type GSchedule {
     _id: String 
     code: String 
-    time: Float
     doctor: GDoctor
     client: GUser
-    duration: Float
+    appointment: GAppointment
     note: String
     channel: EnumChannelSchedule
     status: EnumStatusSchedule
@@ -39,12 +44,17 @@ enum ClientDoctor {
     OTHER
 }
 
+input GAppointmentInput {
+    from: Float
+    to: Float
+    date: Float
+}
+
 input BookScheduleInput {
     idDoctor: String!
-    time: Float!
     channel: EnumChannelSchedule
     note: String
-    duration: Float
+    appointment: GAppointmentInput
 }
 
 enum EnumStatusSchedule {

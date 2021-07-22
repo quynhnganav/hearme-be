@@ -10,9 +10,10 @@ import { Doctor } from "../doctor/schema/doctor.schema";
 import { User } from "../user/schema/user.schema";
 import { BookScheduleInputDTO } from "./dto/create-BookScheduleInput.dto";
 import { GQLScheduleNotFound, GQLScheduleConfirmError, GQLScheduleSpamError } from "./errors";
-import { Schedule, ScheduleDocument } from "./schema/schedule.schema";
+import { Appointment, Schedule, ScheduleDocument } from "./schema/schedule.schema";
 import * as moment from 'moment'
 import { EnumEvent, PubSubSocket } from "../pubsub/pubsub.gateway";
+import { TimerFactory } from "../../helper";
 
 
 @Injectable()
@@ -68,15 +69,16 @@ export class ScheduleService {
 
     async createSchedule(input: BookScheduleInputDTO, user_id: string) {
         const { idDoctor } = input
-        const user_spam = await this.scheduleModel.find({
-            client: new User({ _id: user_id }),
-            isDeleted: false,
-            $and: [
-                { time: { $gt: moment().startOf('day').valueOf() } },
-                { time: { $lt: moment().endOf('day').valueOf() } }
-            ]
-        }).countDocuments()
+        // const user_spam = await this.scheduleModel.find({
+        //     client: new User({ _id: user_id }),
+        //     isDeleted: false,
+        //     $and: [
+        //         { time: { $gt: moment().startOf('day').valueOf() } },
+        //         { time: { $lt: moment().endOf('day').valueOf() } }
+        //     ]
+        // }).countDocuments()
         // if (user_spam >=3) throw new GQLScheduleSpamError()
+        console.log(input)
         const doctor = await this.doctorService.findOne(idDoctor)
         if (!doctor || isEqual(doctor.user._id, user_id)) throw new GQLDoctorNotFound()
         const newSchedule = new this.scheduleModel({
@@ -153,10 +155,10 @@ export class ScheduleService {
     }
 
     async confirm(id: string, client_id: string) {
-        const schedule = await (await this.findOne({ 
-            _id: id, 
+        const schedule = await (await this.findOne({
+            _id: id,
             status: { $ne: EnumStatusSchedule.ACCEPTED },
-            isActive: true, 
+            isActive: true,
         }))?.populate('client')?.populate('doctor')
         console.log(schedule)
         if (!schedule || (!isEqual(schedule.client._id, client_id) && !isEqual(schedule.doctor._id, client_id))) throw new GQLScheduleNotFound()
@@ -175,16 +177,30 @@ export class ScheduleService {
 
 
     async rSScheduleOfDoctor(user_id: string, timespan: number) {
-        const timeStart = moment(timespan).startOf('day').valueOf()
-        const timeEnd = moment(timespan).endOf('day').valueOf()
-        const schedulesOfDoctor = await this.scheduleModel.find({
-            client: new User({ _id: user_id }),
+        const appointment = TimerFactory.timeToAppointment(timespan)
+        const schedules = await this.scheduleModel.find({
             $and: [
-                { time: { $gte: timeStart } },
-                { time: { $lt: timeEnd } }
-            ]
-        }).sort({ time: 1 })
-        const time = timeStart + 1000*60*60*6;
+                { "appointment.date": { $gte: moment(appointment.date).startOf('day').valueOf() } },
+                { "appointment.date": { $lte: moment(appointment.date).endOf('day').valueOf() } },
+            ],
+            isActive: true,
+            isDeleted: false,
+            status: EnumStatusSchedule.ACCEPTED,
+            doctor: new User({ _id: user_id })
+        }).exec()
+        console.log(schedules)
+        const results: Appointment[] = []
+        TimerFactory.TimeAccept.forEach(t => {
+            console.log((moment(appointment.date).startOf('day').add(t.from, 'hour')))
+            if ((moment(appointment.date).startOf('day').add(t.from, 'hour').valueOf() > moment().valueOf()) && 
+            !schedules.some(s => (s.appointment.from == t.from && s.appointment.to == t.to))) {
+                results.push({
+                    ...t,
+                    date: appointment.date
+                })
+            }
+        })
+        return results
     }
 
 }
