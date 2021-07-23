@@ -4,7 +4,8 @@ type Query {
     myBookSchedulesApprove: [GSchedule]
     myBookSchedulesUpcoming: [GSchedule]
     myBeBookSchedules: [GSchedule]
-    rSScheduleOfDoctor(time: Float): [GAppointment]
+    rSScheduleOfDoctor(user_id: String, time: Float): [GAppointment]
+    genTokenMeeting(id: ID!): AuthenticationInfo
 }
 
 type Mutation {
@@ -62,6 +63,8 @@ enum EnumStatusSchedule {
     WAITING_DOCTOR_CONFIRM_CANCEL
     WAITING_CUSTOMER_CONFIRM
     ACCEPTED
+    CANCEL
+    DENIED
 }
 
 enum EnumChannelSchedule {

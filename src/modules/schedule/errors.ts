@@ -32,7 +32,7 @@ export class GQLScheduleConfirmError extends ApolloError {
         code?: string
     }) {
         const { code, message } = args || {
-            message: 'Schedule is Not Found',
+            message: 'Confirm error',
             code: 'GQL_SCHEDULE_CONFIRM_ERROR'
         }
         super(message, code)
@@ -47,6 +47,19 @@ export class GQLScheduleSpamError extends ApolloError {
         const { code, message } = args || {
             message: 'User is Spam',
             code: 'GQL_SCHEDULE_SPAM_ERROR'
+        }
+        super(message, code)
+    }
+}
+
+export class GQLScheduleDoctorBusy extends ApolloError {
+    constructor(args?: {
+        message?: string
+        code?: string
+    }) {
+        const { code, message } = args || {
+            message: 'DOCTOR BUSY',
+            code: 'GQL_SCHEDULE_DOCTOR_BUSY'
         }
         super(message, code)
     }

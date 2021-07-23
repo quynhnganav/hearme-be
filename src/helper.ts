@@ -25,11 +25,24 @@ export class TimerFactory {
     return this.TimeAccept.some(r => (r.from == appointment.from && r.to == appointment.to))
   }
 
+  public static checkAppointmentFree(appointment: Appointment, array: { from: number, to: number }[]){
+    return array.some(r => (r.from == appointment.from && r.to == appointment.to))
+  }
+
   public static timeToAppointment(time: number): Appointment {
     const date = moment(time)
     return ({
       from: date.clone().hour(),
       to: date.clone().hour(),
+      date: date.startOf('day').valueOf()
+    })
+  }
+
+  public static appointmentToTime(time: Appointment): Appointment {
+    const date = moment(time.date)
+    return ({
+      from: date.clone().startOf('day').add(time.from, 'hour').valueOf(),
+      to: date.clone().startOf('day').add(time.to, 'hour').valueOf(),
       date: date.startOf('day').valueOf()
     })
   }

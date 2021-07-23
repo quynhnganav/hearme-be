@@ -36,7 +36,7 @@ export class DoctorService {
 
 
     async findOne(id: string): Promise<Doctor> {
-        return this.doctorModel.findOne({ _id: id, isActive: true, isDeleted: false }).exec()
+        return this.doctorModel.findOne({ _id: id, isActive: true, isDeleted: false }).populate('user').exec()
     }
 
     async findByUserId(id: string): Promise<Doctor> {

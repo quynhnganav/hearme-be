@@ -1,6 +1,7 @@
 import { forwardRef, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { DATABASE_COLLECTIONS } from "../../constant";
+import { AuthModule } from "../auth/auth.module";
 import { DoctorModule } from "../doctor/doctor.module";
 import { PubsubModule } from "../pubsub/pubsub.module";
 import { UserModule } from "../user/user.module";
@@ -15,6 +16,7 @@ import { ScheduleSchema } from "./schema/schedule.schema";
         ]),
         forwardRef(() => DoctorModule),
         UserModule,
+        AuthModule,
         PubsubModule
     ],
     providers: [ScheduleService, ScheduleResolver],
