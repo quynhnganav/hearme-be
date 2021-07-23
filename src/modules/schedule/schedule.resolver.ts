@@ -99,6 +99,15 @@ export class ScheduleResolver {
         return this.scheduleService.cancel(id, user._id)
     }
 
+    @Mutation()
+    async deniedSchedule(
+        @Args('id') id: string,
+        @UserGQL() user: User,
+    ) {
+        return this.scheduleService.denied(id, user._id)
+    }
+    
+
     @ResolveField('isMe')
     async resolClient(
         @Parent() schedule: Schedule,

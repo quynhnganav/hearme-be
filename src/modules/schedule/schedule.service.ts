@@ -68,6 +68,7 @@ export class ScheduleService {
     }
 
     async checkMeetingStart(id: string, client_id: string) {
+        return true
         const schedule = await this.scheduleModel.findById(id)
         if (!schedule || (!isEqual(schedule.client._id, client_id) && !isEqual(schedule.doctor._id, client_id))) throw new GQLScheduleNotFound()
         const timeAppointment = TimerFactory.appointmentToTime(schedule.appointment)
@@ -124,22 +125,28 @@ export class ScheduleService {
                 { client },
                 { doctor }
             ],
-            status: { $ne: EnumStatusSchedule.ACCEPTED },
-            time: { $gt: moment().valueOf() },
+            status: { $in: [EnumStatusSchedule.WAITING_CUSTOMER_CONFIRM, EnumStatusSchedule.WAITING_DOCTOR_CONFIRM] },
+            "appointment.date": { $gte: moment().startOf('day').valueOf() },
             isActive: true,
             isDeleted: false
         }).sort({ time: -1 }).populate('client').populate('doctor')
-        return schedules
+        console.log(schedules)
+        const results = schedules.filter(r => {
+            const time = TimerFactory.appointmentToTime(r.appointment)
+            return time.from >= moment().valueOf()
+        })
+        return results
     }
 
     async myBookSchedulesUpcoming(user_id: string) {
         const client = new User({ _id: user_id })
+        const doctor = new User({ _id: user_id })
         const schedules = await this.scheduleModel.find({
-            client,
             $or: [
-                { status: EnumStatusSchedule.ACCEPTED },
-                { time: { $lte: moment().valueOf() } }
+                { client },
+                { doctor }
             ],
+            status: EnumStatusSchedule.ACCEPTED,
             isActive: true,
             isDeleted: false
         }).sort({ time: -1 }).populate('client').populate('doctor')
@@ -168,6 +175,20 @@ export class ScheduleService {
         )
     }
 
+    async denied(id: string, client_id: string) {
+        const schedule = await (await this.findOne({ _id: id, isActive: true })).populate('client').populate('doctor')
+        if (!schedule || (!isEqual(schedule.client._id, client_id) && !isEqual(schedule.doctor._id, client_id))) throw new GQLScheduleNotFound()
+        if (isEqual(client_id, schedule.client._id)) {
+            return this.updateOne({ _id: id },
+                { isActive: false, status: EnumStatusSchedule.DENIED, updatedAt: moment().valueOf(), updatedBy: schedule.client, cancelBy: 'CLIENT' }
+            )
+        }
+        this.pubSub.sendMessageToUser(EnumEvent.DENIED_SCHEDULE, schedule.client._id, `Lịch đặt của bạn lúc ${schedule.appointment.from}:00 ${moment(schedule.appointment.date).format("DD-MM-YYYY")} đã bị hủy`)
+        return this.updateOne({ _id: id },
+            { isActive: false, status: EnumStatusSchedule.DENIED, updatedAt: moment().valueOf(), updatedBy: schedule.doctor, cancelBy: 'DOCTOR' }
+        )
+    }
+
     async confirm(id: string, client_id: string) {
         const schedule = await this.scheduleModel.findOne({
             _id: id,
@@ -182,7 +203,7 @@ export class ScheduleService {
         //     )
         // }
         if (isEqual(client_id, schedule.doctor._id) && schedule.status === EnumStatusSchedule.WAITING_DOCTOR_CONFIRM) {
-            await this.scheduleModel.updateMany({
+            const scs = await this.scheduleModel.find({
                 _id: { $ne: schedule._id },
                 isActive: true,
                 doctor: schedule.doctor,
@@ -191,12 +212,22 @@ export class ScheduleService {
                     { "appointment.date": { $lte: moment(schedule.appointment.date).endOf('day').valueOf() } },
                 ],
                 "appointment.from": schedule.appointment.from,
-                "appointment.to": schedule.appointment.to
+                "appointment.to": schedule.appointment.to,
+                status: { $in: [EnumStatusSchedule.WAITING_CUSTOMER_CONFIRM, EnumStatusSchedule.WAITING_DOCTOR_CONFIRM] }
+            }).populate('client').exec()
+            const ids = scs.map(s => s._id)
+            await this.scheduleModel.updateMany({
+                _id: { $in: ids }
             }, {
                 $set: {
                     status: EnumStatusSchedule.DENIED
                 }
             })
+            scs.forEach(s => {
+                const time = moment(s.appointment.date)
+                this.pubSub.sendMessageToUser(EnumEvent.DENIED_SCHEDULE, s.client._id, `Lịch đặt của bạn lúc ${s.appointment.from}:00 ${time.format("DD-MM-YYYY")} đã bị hủy`)
+            })
+            this.pubSub.sendMessageToUser(EnumEvent.ACCEPTED_SCHEDULE, schedule.client._id, `Lịch đặt của bạn lúc ${schedule.appointment.from}:00 ${moment(schedule.appointment.date).format("DD-MM-YYYY")} đã được chấp nhận`)
             return this.updateOne({ _id: id },
                 { updatedAt: moment().valueOf(), updatedBy: schedule.doctor, status: EnumStatusSchedule.ACCEPTED }
             )

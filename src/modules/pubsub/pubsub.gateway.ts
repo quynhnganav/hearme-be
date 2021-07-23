@@ -5,6 +5,7 @@ import { GatewayMetadataExtended } from "./interface";
 import { AuthService } from "../auth/auth.service";
 import { JWTVerifyPayload } from "../auth/auth.interface";
 import { Schedule } from "../schedule/schema/schedule.schema";
+import { differenceBy } from "lodash";
 
 
 export interface MemoryUserSoket { 
@@ -13,7 +14,9 @@ export interface MemoryUserSoket {
 }
 
 export enum EnumEvent {
-    NEW_SCHEDULES = "NEW_SCHEDULES"
+    NEW_SCHEDULES = "NEW_SCHEDULES",
+    DENIED_SCHEDULE = "DENIED_SCHEDULE",
+    ACCEPTED_SCHEDULE = "ACCEPTED_SCHEDULE"
 } 
 
 const options = {
@@ -69,6 +72,12 @@ export class PubSubSocket implements OnGatewayInit, OnGatewayConnection, OnGatew
     }
     handleDisconnect(client: Socket) {
         // throw new Error("Method not implemented.");
+        this.userMap.forEach((vl, key) => {
+            const cls = vl.map(v => v.clientId)
+            if (cls.includes(client.id)) {
+                this.userMap.set(key, differenceBy(vl, [{ clientId: client.id, sessionId: '' }], 'clientId'))
+            }
+        })
         console.log("Disconnect", client.id)
     }
 
