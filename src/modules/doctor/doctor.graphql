@@ -1,6 +1,6 @@
 type Query {
     doctors: [GDoctor]
-    doctorsRS: [GDoctor]
+    doctorsRS: [GDoctorRs]
     myDoctor: GDoctor
 }
 
@@ -8,6 +8,11 @@ type Mutation {
     registerDoctor(input: RegisterDoctorInput!): GDoctor
     confirmDoctor(id: ID!): [GDoctor]
     lookDoctor(id: ID!): [GDoctor]
+}
+
+type GDoctorRs {
+    doctor: GDoctor
+    freetimes: [GAppointment]
 }
 
 type GDoctor {

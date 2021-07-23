@@ -12,6 +12,7 @@ import ConfigModule from '../config/config.module';
 import { ConfigurationService } from '../config/config.service';
 import { MicroserviceModule } from '../microservices/microservice.module';
 import { TelegramModule } from '../telegram/telegram.module';
+import { ScheduleModule } from '../schedule/schedule.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { TelegramModule } from '../telegram/telegram.module';
             { name: DATABASE_COLLECTIONS.ROLE, schema: RoleSchema }
         ]),
         forwardRef(() => UserModule),
+        // forwardRef(() => ScheduleModule),
         SessionModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],

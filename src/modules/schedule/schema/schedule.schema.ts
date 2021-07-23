@@ -8,6 +8,12 @@ import { IDFactory } from '../../../helper'
 
 export type ScheduleDocument = Schedule & Document
 
+export class Appointment {
+    from: number
+    to: number
+    date: number
+}
+
 @Schema({
     collection: DATABASE_COLLECTIONS.SCHEDULE
 })
@@ -26,15 +32,9 @@ export class Schedule {
     code: string
 
     @Prop({
-        required: true
-    })
-    time: number
 
-    @Prop({
-        required: true,
-        default: 1000*60*30
     })
-    duration: number
+    appointment: Appointment
 
     @Prop({
         ref: DATABASE_COLLECTIONS.USER,

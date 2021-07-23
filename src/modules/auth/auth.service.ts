@@ -29,7 +29,8 @@ export class AuthService {
         private readonly configSrv: ConfigurationService,
         private readonly userService: UserService,
         private readonly sessionService: SessionService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        
     ) { }
 
     async sendMail(email: string, name: string, time?: string) {

@@ -25,17 +25,6 @@ export class AuthResolver {
     ) { }
 
     @Query()
-    async genTokenMeeting(
-        @UserGQL() user: User
-    ) {
-        const token = await this.authService.signUserToken(user._id, EnumTypeSeesion.MEETINGAUTH);
-        return {
-            token,
-            userId: user._id
-        };
-    }
-
-    @Query()
     @NotAuthentication()
     async getRoles(): Promise<Role[]> {
         const roles = await this.authService.findAllRole();

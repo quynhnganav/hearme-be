@@ -1,6 +1,7 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { DATABASE_COLLECTIONS } from "../../constant";
+import { AuthModule } from "../auth/auth.module";
 import { DoctorModule } from "../doctor/doctor.module";
 import { PubsubModule } from "../pubsub/pubsub.module";
 import { UserModule } from "../user/user.module";
@@ -13,8 +14,9 @@ import { ScheduleSchema } from "./schema/schedule.schema";
         MongooseModule.forFeature([
             { name: DATABASE_COLLECTIONS.SCHEDULE, schema: ScheduleSchema }
         ]),
+        forwardRef(() => DoctorModule),
         UserModule,
-        DoctorModule,
+        AuthModule,
         PubsubModule
     ],
     providers: [ScheduleService, ScheduleResolver],

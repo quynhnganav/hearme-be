@@ -8,13 +8,16 @@ import { Schedule } from './schema/schedule.schema'
 import { ClientDoctor } from '../../schema'
 import { isEqual } from 'lodash'
 import { DoctorService } from '../doctor/doctor.service';
+import { AuthService } from '../auth/auth.service';
+import { EnumTypeSeesion } from '../session/schema/session.schema';
 
 @Resolver('GSchedule')
 export class ScheduleResolver {
 
     constructor(
         private readonly scheduleService: ScheduleService,
-        private readonly doctorService: DoctorService
+        private readonly doctorService: DoctorService,
+        private readonly authService: AuthService
     ) { }
 
     @Query()
@@ -52,9 +55,23 @@ export class ScheduleResolver {
 
     @Query()
     async rSScheduleOfDoctor(
-        @Args('time') time: number
+        @Args('time') time: number,
+        @Args('user_id') user_id: string
     ) {
-        return []
+        return this.scheduleService.rSScheduleOfDoctor(user_id, time)
+    }
+
+    @Query()
+    async genTokenMeeting(
+        @UserGQL() user: User,
+        @Args('id') id: string
+    ) {
+        await this.scheduleService.checkMeetingStart(id, user._id)
+        const token = await this.authService.signUserToken(user._id, EnumTypeSeesion.MEETINGAUTH);
+        return {
+            token,
+            userId: user._id
+        };
     }
 
     @Mutation()
@@ -81,6 +98,15 @@ export class ScheduleResolver {
     ) {
         return this.scheduleService.cancel(id, user._id)
     }
+
+    @Mutation()
+    async deniedSchedule(
+        @Args('id') id: string,
+        @UserGQL() user: User,
+    ) {
+        return this.scheduleService.denied(id, user._id)
+    }
+    
 
     @ResolveField('isMe')
     async resolClient(
