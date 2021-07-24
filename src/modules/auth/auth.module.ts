@@ -13,6 +13,9 @@ import { ConfigurationService } from '../config/config.service';
 import { MicroserviceModule } from '../microservices/microservice.module';
 import { TelegramModule } from '../telegram/telegram.module';
 import { ScheduleModule } from '../schedule/schedule.module';
+import { QueueModule } from '../queue/queue.module';
+import { BullModule } from '@nestjs/bull';
+import { MailProcessor } from '../queue/mail.process';
 
 @Module({
     imports: [
@@ -34,9 +37,12 @@ import { ScheduleModule } from '../schedule/schedule.module';
             inject: [ConfigurationService]
         }),
         MicroserviceModule,
-        TelegramModule
+        TelegramModule,
+        BullModule.registerQueue({
+            name: 'mail',
+        }),
     ],
-    providers: [AuthService, AuthResolver, RoleResolver],
+    providers: [AuthService, AuthResolver, RoleResolver, MailProcessor],
     exports: [AuthService]
 })
 export class AuthModule { }
