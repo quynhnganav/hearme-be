@@ -14,6 +14,8 @@ import { Appointment, Schedule, ScheduleDocument } from "./schema/schedule.schem
 import * as moment from 'moment'
 import { EnumEvent, PubSubSocket } from "../pubsub/pubsub.gateway";
 import { TimerFactory } from "../../helper";
+import { AuthService } from "../auth/auth.service";
+import { EnumTypeSeesion } from "../session/schema/session.schema";
 
 
 @Injectable()
@@ -22,7 +24,8 @@ export class ScheduleService {
     constructor(
         @InjectModel(DATABASE_COLLECTIONS.SCHEDULE) private readonly scheduleModel: Model<ScheduleDocument>,
         private readonly doctorService: DoctorService,
-        private readonly pubSub: PubSubSocket
+        private readonly pubSub: PubSubSocket,
+        private readonly authService: AuthService
     ) { }
 
 
@@ -34,7 +37,7 @@ export class ScheduleService {
         const schedules = await this.scheduleModel.find({
             isDeleted: false,
             ...filter
-        }).sort(sort);
+        }).populate('client').populate('doctor').sort(sort);
         return schedules;
     }
 
@@ -65,6 +68,14 @@ export class ScheduleService {
     ) {
         const schedule = await this.scheduleModel.findOneAndUpdate(filter, update).exec()
         return schedule
+    }
+
+    async genTokenMeeting(user_id) {
+        const token = await this.authService.signUserToken(user_id, EnumTypeSeesion.MEETINGAUTH);
+        return {
+            token,
+            userId: user_id
+        };
     }
 
     async checkMeetingStart(id: string, client_id: string) {
