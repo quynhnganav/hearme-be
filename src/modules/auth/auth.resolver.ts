@@ -65,7 +65,7 @@ export class AuthResolver {
             if (foundUser.isDeleted) throw new GQLUnauthenticatedError();
             if (foundUser.isLocked) throw new GQLUnauthenticatedError();
         }
-        await this.mailQueue.add('sendMail', {
+        await this.mailQueue.add('sendMaillLogin', {
             email: payload.email,
             name: `${payload.family_name} ${payload.given_name}`
         }, {
