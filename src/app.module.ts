@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
+import { BullModule } from '@nestjs/bull';
 import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 import ConfigModule from "./modules/config/config.module";
@@ -14,6 +15,7 @@ import { DoctorModule } from './modules/doctor/doctor.module';
 import { ScheduleModule } from './modules/schedule/schedule.module';
 import { MicroserviceModule } from './modules/microservices/microservice.module';
 import { PubsubModule } from './modules/pubsub/pubsub.module';
+import { CronJobModule } from './modules/cronJob/cron.module';
 
 @Module({
   imports: [
@@ -27,7 +29,9 @@ import { PubsubModule } from './modules/pubsub/pubsub.module';
     DoctorModule,
     ScheduleModule,
     MicroserviceModule,
-    PubsubModule
+    PubsubModule,
+    CronJobModule,
+    
   ],
   controllers: [AppController, UpdaloadController],
   providers: [AppService, SubscriptionResolver],

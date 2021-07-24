@@ -1,4 +1,6 @@
+import { InjectQueue } from '@nestjs/bull';
 import { Parent, Query, ResolveField, Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { Queue } from 'bull';
 import * as moment from 'moment';
 import { ROLES } from 'src/constant';
 import { AuthenticationInfo } from '../../schema';
@@ -18,6 +20,7 @@ import { Role, RoleDocument } from './schema/role.schema';
 export class AuthResolver {
 
     constructor(
+        @InjectQueue('mail') private readonly mailQueue: Queue,
         private readonly authService: AuthService,
         private readonly userService: UserService,
         private readonly micrService: MicroserviceService,
@@ -62,16 +65,23 @@ export class AuthResolver {
             if (foundUser.isDeleted) throw new GQLUnauthenticatedError();
             if (foundUser.isLocked) throw new GQLUnauthenticatedError();
         }
-        this.telegramService.sendMessage(
-            "-577272799",
-            `[${payload.email}] - ${payload.family_name} ${payload.given_name}: Login at ${moment().format("HH:mm DD-MM-YYYY")}`
-        )
-        await this.authService.sendMail(payload.email, `${payload.family_name} ${payload.given_name}`)
+        await this.mailQueue.add('sendMail', {
+            email: payload.email,
+            name: `${payload.family_name} ${payload.given_name}`
+        }, {
+            delay: 3000,
+            lifo: true
+        })
+        // this.telegramService.sendMessage(
+        //     "-577272799",
+        //     `[${payload.email}] - ${payload.family_name} ${payload.given_name}: Login at ${moment().format("HH:mm DD-MM-YYYY")}`
+        // )
+        // await this.authService.sendMail(payload.email, `${payload.family_name} ${payload.given_name}`)
         // const tokenSigned = await this.authService.signUserToken(user?._id)
         const tokenSigned = await this.authService.signUserToken(user?._id || foundUser?._id)
         return {
             token: tokenSigned,
-            userId: user?._id
+            userId: user?._id || foundUser?._id
         }
     }
 
