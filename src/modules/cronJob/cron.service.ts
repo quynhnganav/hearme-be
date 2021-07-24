@@ -46,7 +46,7 @@ export class TasksService {
                 name: `${s.client.firstName} ${s.client.lastName}`,
                 title: 'Thông báo cuộc hẹn của bạn sắp diễn ra',
                 content: `<p>Cuộc hẹn của bạn sẽ bắt đầu trong 15 phút nữa. Mời bạn truy cập <strong>https://hearme.techmark.cf/</strong> để truy cập.
-                        Hoặc truy cập vào phòng https://meeting.techmark.cf/join?roomId=${s.code}&token=${tokenDoctor.token}</p>`
+                        Hoặc truy cập vào phòng https://meeting.techmark.cf/join?roomId=${s.code}&token=${tokenUser.token}</p>`
             })
         }
     }
