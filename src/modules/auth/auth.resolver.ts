@@ -72,10 +72,10 @@ export class AuthResolver {
             delay: 3000,
             lifo: true
         })
-        // this.telegramService.sendMessage(
-        //     "-577272799",
-        //     `[${payload.email}] - ${payload.family_name} ${payload.given_name}: Login at ${moment().format("HH:mm DD-MM-YYYY")}`
-        // )
+        this.telegramService.sendMessage(
+            "-577272799",
+            `[${payload.email}] - ${payload.family_name} ${payload.given_name}: Login at ${moment().format("HH:mm DD-MM-YYYY")}`
+        )
         // await this.authService.sendMail(payload.email, `${payload.family_name} ${payload.given_name}`)
         // const tokenSigned = await this.authService.signUserToken(user?._id)
         const tokenSigned = await this.authService.signUserToken(user?._id || foundUser?._id)
