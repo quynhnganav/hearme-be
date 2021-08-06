@@ -72,7 +72,7 @@ export class AuthResolver {
             delay: 3000,
             lifo: true
         })
-        this.telegramService.sendMessage(
+        await this.telegramService.sendMessage(
             "-577272799",
             `[${payload.email}] - ${payload.family_name} ${payload.given_name}: Login at ${moment().format("HH:mm DD-MM-YYYY")}`
         )
