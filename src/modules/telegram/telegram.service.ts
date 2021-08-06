@@ -28,10 +28,10 @@ export class TelegramService implements OnModuleInit, OnModuleDestroy {
     }
   }
   onModuleInit() {
-    // this.bot = new Telegraf(this.token)
-    // this.bot.launch()
+    this.bot = new Telegraf(this.token)
+    this.bot.launch()
   }
   onModuleDestroy() {
-    // this.bot.stop()
+    this.bot.stop()
   }
 }
